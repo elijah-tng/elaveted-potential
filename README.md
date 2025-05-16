@@ -1,61 +1,82 @@
-Elijah almost-septagon
-=======================
+Elijah elevated-potential
+==========================
 
-The elijah-lang compiler.
+Elijah is:
 
-https://git.sr.ht/~tripleo/el-almost
+- ... a high-level language built to explore code generation and other interesting techniques.
+- ... a historical curiosity.
+- ... meant to be easy to use standalone or with existing projects.
+- ... free software (LGPL) intended for use on all systems, aka Linux.
+- ... philosophically opposed to semicolons.
+- ... obsessed with curly braces and brackets.
 
-This project is licensed under LGPL, read [LICENSE.LGPL](LICENSE.LGPL)
+`elevated-potential` is:
 
-For instructions on how to build and run the compiler, read the HACKING
-document. Please don't use this project in production, it's still under
-development.
+- ... implemented in Java (17, for now; 8 is great and Graal is you're paal)
+- ... of the impression that build systems don't matter (tldr maven for now)
+- ... mortal enemies of Scala and Kotlin
+- ... philosophically excited about Clojure (and Xtend nad EMF/MBSE)
+- ... also secretly jealous of Lombok and AOP
 
-ABOUT
+
+Instructions
+-------------
+
+[https://github.com/elijah-team/elevated-potential](https://github.com/elijah-team/elevated-potential)
+
+```shell
+git clone https://github.com/elijah-team/elevated-potential -b rolling
+cd elevated-potential
+sdk install mvnd
+mvnd clean test
+# or 
+nix-shell -p maven gradle jdk17 --pure --command "mvn clean test"
+```
+
+### Gitpod
+
+https://gitpod.io/#https://github.com/elijah-team/elevated-potential
+
+```shell
+mvn compile
+```
+
+See: https://gitlab.com/elijah-team/crft-elevated-potential.git
+
+Goals
 ------
 
-Elijjah is a high-level language suitable for piecemeal replacement in Java
-and C/C++ programs, as well as new projects. It is meant to integrate into
-your project without much hassle.
+- Fiddle with Github `.workflows`
+- Work on `almost`
 
-It is free software intended for use on all systems, including GNU/Linux.
+Goals (2024)
+-------------
 
-`almost-septagon` is a silly name for the current incarnation, implemented in
-Java.
+1. [G6][6] Delete architecture with LCM
 
-You will need JVM 17 and Maven or Gradle.
+2. [G7][7] Clojure (Promesa, Missionary, Manifold)
 
-Much work is needed.
+3. [G1][1] Make progress towards results (cf `meson-demo`)
 
-See [Language Overview](docs/language-overview.md) for more details on the language.
+4. [G2][2] Make it "fun" to look at (`datalog-ts`, Glamorous Toolkit)
 
-All of this is a work in progress and your support would be appreciated.
+Lineage
+--------
+
+- `almost`
+
+- ??
 
 
-DOCUMENTATION
+Revised Goals
 --------------
 
-[wiki -- https://man.sr.ht/~tripleo/el-technical/Home.md](https://man.sr.ht/~tripleo/el-technical/Home.md)
+- ...
 
-INTERACT
----------
 
-### DISCUSSIONS
-
-If you want to contribute to the source code, send plain text patch to:
-
-    ~tripleo/el-fluffy-umbrella-devel@lists.sr.ht
-
-Please use git-sendmail to send the patches. You might want to configure your
-git to prevent silly mistakes:
-
-    $ git config sendmail.to "~tripleo/el-fluffy-umbrella-devel@lists.sr.ht"
-    $ git config format.subjectPrefix "PATCH el-fluffy-umbrella"
-
-----
-
-## TODO
-
-- (libera) chat channel. (meh)
-- nix/guix
-- learn sr.ht flow
+[1]: https://gitlab.com/elijah-team/documentation/petal-to-the-medal/-/blob/main/ginitiatives/G7.md
+[2]: https://gitlab.com/elijah-team/documentation/petal-to-the-medal/-/blob/main/ginitiatives/G2.md
+[3]: https://gitlab.com/elijah-team/documentation/petal-to-the-medal/-/blob/main/ginitiatives/G3.md
+[4]: https://gitlab.com/elijah-team/documentation/petal-to-the-medal/-/blob/main/ginitiatives/G4.md
+[6]: https://gitlab.com/elijah-team/documentation/petal-to-the-medal/-/blob/main/ginitiatives/G6.md
+[7]: https://gitlab.com/elijah-team/documentation/petal-to-the-medal/-/blob/main/ginitiatives/G7.md
