@@ -90,6 +90,7 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	private final          Eventual<CP_Paths>                                             _p_pathsEventual      = new Eventual<>();
 	private final          Eventual<CompilerController>                                   _p_CompilerController = new Eventual<>();
 	private final          _A_megaGrande                                                  _a_megaGrande         = new _A_megaGrande();
+	private final          Eventual<Compilation>                                          _p_Postable;
 	private                JarWork                                                        jarwork;
 	private                EIT_InputTree                                                  _input_tree;
 	private                EOT_OutputTree                                                 _output_tree;
@@ -110,6 +111,7 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 		lcm                = new LCM(this);
 		xxx                = new ArrayList<>();
 		_compilationNumber = new Random().nextInt(Integer.MAX_VALUE);
+		_p_Postable        = new Eventual<>("compilation::Postable");//.resolve(this);
 		_fluffyComp        = new FluffyCompImpl(this);
 		cfg                = new CompilationConfig();
 		use                = new EDL_USE(this.getCompilationClosure());
@@ -523,7 +525,7 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public List<CompilerInput> getInputs() {
 		//return _inputs;
-		throw new UnintendedUseException();
+		throw new UnintendedUseException("Assuming not in this line");
 	}
 
 	@Override
@@ -796,7 +798,7 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 
 	@Override
 	public void post_(final Postable aPostable) {
-		aPostable.accept(this); // thought we did this already
+		_p_Postable.then(aPostable::accept);
 	}
 
 
