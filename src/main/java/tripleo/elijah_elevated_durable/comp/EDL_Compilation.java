@@ -777,16 +777,10 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 		};
 	}
 
-
-
-
-
-
-
-
-
-
-
+	@Override
+	public void post_(final Postable aPostable) {
+		aPostable.accept(this); // thought we did this already
+	}
 
 
 	//@Override
