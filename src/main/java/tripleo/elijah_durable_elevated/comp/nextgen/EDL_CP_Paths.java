@@ -47,16 +47,6 @@ public class EDL_CP_Paths implements CP_Paths {
 	}
 
 	@Override
-	public void renderNodes() {
-		outputRoot._renderNodes(outputNodes);
-	}
-
-	@Override
-	public void signalCalculateFinishParse() {
-		outputRoot.signalCalculateFinishParse();
-	}
-
-	@Override
 	public @NotNull CP_StdlibPath stdlibRoot() {
 		return stdlibRoot;
 	}
@@ -67,39 +57,43 @@ public class EDL_CP_Paths implements CP_Paths {
 	}
 
 	@Override
+	public void renderNodes() {
+		outputRoot._renderNodes(outputNodes);
+	}
+
+	@Override
+	public void signalCalculateFinishParse() {
+		outputRoot.signalCalculateFinishParse();
+	}
+
+	@Override
 	public void subscribeCalculateFinishParse(CPX_CalculateFinishParse cp_OutputPath) {
-		//__CPX_CalculateFinishParse
-		//	.onItem()
-		//	.invoke((x)->{
-		//		cp_OutputPath.notify_CPX_CalculateFinishParse(x);
-		//	});
 		_c.onConfig(new DoneCallback<IPersistentMap>() {
 			@Override
 			public void onDone(final IPersistentMap result) {
-				final String S = "CompilerController-deref";
+				final String S     = "CompilerController-deref";
 				final Object atom0 = result.valAt(S, null);
 				if (atom0 != null) {
 					if (atom0 instanceof IAtom) {
 						IAtom atom = (IAtom) atom0;
-						int y=2;
-					} else if (atom0 instanceof IFn fn) {
-						int y=2;
+						NotImplementedException.raise_stop();
+						System.err.println("[TRACE] Clojure atom found for " + S + " is a IFn");
+						return;
+					} else if (atom0 instanceof IFn) {
+						IFn fn = (IFn) atom0;
+						if (false) fn.invoke();
+						NotImplementedException.raise_stop();
+						System.err.println("[TRACE] Clojure atom found for " + S + " is a IFn");
+						return;
+					} else {
+						NotImplementedException.raise_stop();
+						System.err.println("[TRACE] Clojure atom found for " + S + " is not of class IAtom");
+						return;
 					}
-					int y=2;
+				} else {
+					System.err.println("[TRACE] No clojure atom found for " + S);
 				}
-				//throw new UnintendedUseException("removed mutiny");
 			}
 		});
 	}
-
-	//Uni<Ok> __CPX_CalculateFinishParse = Uni.createFrom().publisher(__CPX_CalculateFinishParse__publisher());//.item(Ok.instance());
-	//
-	//private Publisher<Ok> __CPX_CalculateFinishParse__publisher() {
-	//	return new Publisher<Ok>() {
-	//		@Override
-	//		public void subscribe(Subscriber<? super Ok> subscriber) {
-	//			throw new UnintendedUseException("TODO 12/28 dpys, implement me");
-	//		}
-	//	};
-	//}
 }
