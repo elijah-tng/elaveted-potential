@@ -12,6 +12,7 @@ import tripleo.elijah_elevated_durable.comp.EDL_CompilerController;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/// Do NOT maintain state anywhere near this
 public class NonOpinionatedBuilder {
 	public NonOpinionatedBuilder() {}
 
