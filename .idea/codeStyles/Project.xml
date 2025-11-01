@@ -43,7 +43,7 @@
           </group>
           <group>
             <type>OVERRIDDEN_METHODS</type>
-            <order>KEEP</order>
+            <order>BY_NAME</order>
           </group>
           <group>
             <type>GETTERS_AND_SETTERS</type>
