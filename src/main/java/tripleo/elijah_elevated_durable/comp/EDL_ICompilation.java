@@ -132,4 +132,5 @@ public interface EDL_ICompilation extends Compilation {
 	void onConfig(DoneCallback<IPersistentMap>
 				  cb);
 
+	void doPost();
 }
