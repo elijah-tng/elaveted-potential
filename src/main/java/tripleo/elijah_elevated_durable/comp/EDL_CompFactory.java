@@ -1,5 +1,6 @@
 package tripleo.elijah_elevated_durable.comp;
 
+import com.google.common.base.*;
 import org.jetbrains.annotations.*;
 import tripleo.elijah.comp.*;
 import tripleo.elijah.comp.i.*;
@@ -19,6 +20,7 @@ import tripleo.elijah_durable_elevated.lang.impl.*;
 import tripleo.elijah_durable_elevated.nextgen.inputtree.*;
 import tripleo.elijah_durable_elevated.nextgen.outputtree.*;
 import tripleo.elijah_durable_elevated.util.*;
+import tripleo.elijah_durable_elevated.world.i.*;
 import tripleo.elijah_durable_elevated.world.i.LivingRepo;
 import tripleo.elijah_elevated_durable.world_impl.*;
 import tripleo.elijah_fluffy.util.*;
@@ -26,13 +28,18 @@ import tripleo.graph.*;
 import tripleo.paths.*;
 
 import java.util.*;
+import java.util.Objects;
 
 class EDL_CompFactory implements CompFactory {
-	private final EDL_Compilation compilation;
-	private       CM_UleLog       _log;
+	private final EDL_Compilation           compilation;
+	private final Eventual<EDL_Compilation> compilationP = new Eventual<>("EDL_CompFactory::postable-compilation");
+	private       CM_UleLog                 _log;
 
 	public EDL_CompFactory(EDL_Compilation aCompilation) {
 		compilation = aCompilation;
+		//assert compilation != null;
+		Preconditions.checkNotNull(compilation, "Compilation cannot be null for EDL_CompFactory");
+		compilationP.resolve(compilation);
 	}
 
 	@Contract(" -> new")
@@ -68,7 +75,7 @@ class EDL_CompFactory implements CompFactory {
 	@Override
 	public CK_ObjectTree createObjectTree() {
 		final EDL_ObjectTree res = new EDL_ObjectTree();
-		compilation.post_((Postable) res);
+		compilationP.then(Sc -> Sc.post_((Postable) res));
 		return res;
 	}
 
