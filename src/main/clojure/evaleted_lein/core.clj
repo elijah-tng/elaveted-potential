@@ -1,6 +1,6 @@
 (ns evaleted-lein.core
   (:require
-    [donut.system :as ds])
+   [donut.system :as ds])
   (:gen-class)
   (:import (java.util.concurrent TimeUnit)
            (tripleo.elijah Main)
@@ -76,8 +76,11 @@
 (defn -main []
   (let [file-name "test/demo-el-normal/main2"
         active true]
-    (if (true? active)
-      (Main/main3 (list file-name) {})))
+
+    (let [a1 (atom nil)
+          a2 (atom nil)]
+      (if (true? active)
+        (Main/main3 (list file-name) {:atom1 a1 :atom2 a2}))))
 
   ;(doto (InstrumentalTest1Test.)
   ;  (.chunkyExample))
