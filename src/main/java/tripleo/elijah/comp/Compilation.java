@@ -10,13 +10,11 @@ import tripleo.elijah.g.*;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.nextgen.inputtree.*;
 import tripleo.elijah.nextgen.outputtree.*;
-import tripleo.elijah_elevated_durable.comp.*;
 import tripleo.elijah_fluffy.util.*;
 import tripleo.graph.*;
 import tripleo.paths.*;
 
 import java.util.*;
-import java.util.function.*;
 
 public interface Compilation /*extends GCompilation*/ {
 
@@ -87,14 +85,14 @@ public interface Compilation /*extends GCompilation*/ {
 	CP_Paths paths();
 
 	void addCodeOutput(EOT_FileNameProvider aFileNameProvider,
-					   Supplier<EOT_OutputFile> aOutputFileSupplier,
+					   java.util.function.Supplier<EOT_OutputFile> aOutputFileSupplier,
 					   boolean addFlag);
 
 	void spi(Object aObject);
 
 	CompilationInterfaceRevised revised();
 
-	void post(Postable aPostable);
+	void post_(Postable aPostable);
 
 	boolean hasClojureSupport();
 
