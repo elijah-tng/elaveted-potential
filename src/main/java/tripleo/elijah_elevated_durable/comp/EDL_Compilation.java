@@ -923,6 +923,13 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 
 	@Override
 	public boolean hasClojureSupport() {
-		return false;
+		var h = new Holder<Boolean>();
+		this._p_CompilerController.then(new DoneCallback<CompilerController>() {
+			@Override
+			public void onDone(final CompilerController result) {
+				h.set(result != null);
+			}
+		});
+		return h.get();
 	}
 }
