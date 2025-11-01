@@ -1,20 +1,18 @@
 package tripleo.elijah_durable_elevated.factory.comp;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.IO;
-import tripleo.elijah.comp.i.ErrSink;
-import tripleo.elijah_elevated_durable.comp.EDL_IO;
-import tripleo.elijah_durable_elevated.comp.StdErrSink;
-import tripleo.elijah_durable_elevated.stages.deduce.IFunctionMapHook;
-import tripleo.elijah_elevated_durable.comp.EDL_Compilation;
+import org.jetbrains.annotations.*;
+import tripleo.elijah.comp.*;
+import tripleo.elijah.comp.i.*;
+import tripleo.elijah_durable_elevated.comp.*;
+import tripleo.elijah_durable_elevated.stages.deduce.*;
+import tripleo.elijah_elevated_durable.comp.*;
 
-import java.util.List;
+import java.util.*;
 
 public enum CompilationFactory {
 	;
 
-	@Contract("_, _ -> new")
+	@Contract(" -> new")
 	public static @NotNull EDL_Compilation mkCompilation0() {
 		return mkCompilation(new StdErrSink(), new EDL_IO());
 	}
@@ -26,7 +24,7 @@ public enum CompilationFactory {
 
 	public static @NotNull EDL_Compilation mkCompilation2(final List<IFunctionMapHook> aMapHooks) {
 		final StdErrSink errSink = new StdErrSink();
-		final IO io = new EDL_IO();
+		final IO         io      = new EDL_IO();
 
 		final @NotNull EDL_Compilation c = mkCompilation(errSink, io);
 
