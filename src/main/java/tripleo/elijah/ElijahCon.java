@@ -12,7 +12,8 @@ public class ElijahCon {
 
 	public static void compile(final String[] args, final CompilerController[] holder) {
 		final List<String>       stringList = new ArrayList<>(Arrays.asList(args));
-		final EDL_ICompilation   comp       = CompilationFactory.mkCompilation(new StdErrSink(), new EDL_IO());
+		final EDL_ICompilation   comp       = CompilationFactory.mkCompilation0();
+		//comp.doPost(); // should fail
 		final CompilerController actual     = comp.feedInputsCon(stringList);
 		if (holder != null) {
 			holder[0] = actual;
@@ -22,8 +23,9 @@ public class ElijahCon {
 	public static void compileA(final List<String> args,
 								final List<CompilerController> holder,
 								final DoneCallback<CompilerController> cb) {
-		final EDL_ICompilation   comp       = CompilationFactory.mkCompilation(new StdErrSink(), new EDL_IO());
+		final EDL_ICompilation   comp       = CompilationFactory.mkCompilation0();
 		final CompilerController actual     = comp.feedInputsCon(args);
+		//comp.doPost(); // should fail
 		if (holder != null) {
 			holder.set(0, actual);
 		}
