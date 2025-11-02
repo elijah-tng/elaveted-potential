@@ -22,7 +22,11 @@ public interface Compilation /*extends GCompilation*/ {
 
 	CK_ObjectTree getObjectTree();
 
-	int errorCount();
+	default int errorCount() {
+		return getErrSink().errorCount();
+	}
+
+	ErrSink getErrSink();
 
 	void feedCmdLine(@NotNull List<String> args) throws Exception;
 
@@ -33,9 +37,6 @@ public interface Compilation /*extends GCompilation*/ {
 	String getCompilationNumberString();
 
 	CompilerInputListener getCompilerInputListener();
-
-	ErrSink getErrSink();
-
 
 	@Contract(pure = true)
 	List<CompilerInput> getInputs();

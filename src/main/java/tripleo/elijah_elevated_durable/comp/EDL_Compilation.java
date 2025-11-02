@@ -103,7 +103,7 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	public EDL_Compilation(final @NotNull ErrSink aErrSink, final IO aIo) {
 		errSink            = aErrSink;
 		io                 = aIo;
-		_con               = new EDL_CompFactory(this);
+		_con               = new EDL_CompFactory();
 		lcm                = new LCM(this);
 		xxx                = new ArrayList<>();
 		_compilationNumber = new Random().nextInt(Integer.MAX_VALUE);
@@ -454,9 +454,6 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public EDL_CompilationRunner getRunner() {
 		return (EDL_CompilationRunner) getCompilationEnclosure().getCompilationRunner();
-	}	@Override
-	public int errorCount() {
-		return errSink.errorCount();
 	}
 
 	@Override
@@ -533,6 +530,16 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public CK_ObjectTree getObjectTree() {
 		return objectTree;
+	}
+
+	@Override
+	public void feedCmdLine(final @NotNull List<String> args) {
+		//final CompilerController controller = new EDL_CompilerController(this.getCompilationAccess3());
+		//ccP.resolve(controller);
+		//final NonOpinionatedBuilder nob    = new NonOpinionatedBuilder();
+		//final List<CompilerInput>   inputs = nob.inputs(args);
+		//feedInputs(inputs, controller);
+		throw new UnintendedUseException("assumed not used, can put back when necc.");
 	}
 
 	/**
@@ -627,19 +634,6 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 		cb.run(aInput, this.getCompilationClosure());
 	}
 
-
-
-
-	@Override
-	public void feedCmdLine(final @NotNull List<String> args) {
-		final CompilerController controller = new EDL_CompilerController(this.getCompilationAccess3());
-		ccP.resolve(controller);
-		final NonOpinionatedBuilder nob    = new NonOpinionatedBuilder();
-		final List<CompilerInput>   inputs = nob.inputs(args);
-		feedInputs(inputs, controller);
-	}
-
-
 	public ICompilationAccess3 getCompilationAccess3() {
 		var _c = this;
 		if (compilationAccess3 == null) {
@@ -678,6 +672,8 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 		}
 		return compilationAccess3;
 	}
+
+
 
 	@Override
 	public void setIO(final IO io) {
