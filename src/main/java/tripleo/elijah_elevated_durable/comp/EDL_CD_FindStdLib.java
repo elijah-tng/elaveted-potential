@@ -20,6 +20,24 @@ public class EDL_CD_FindStdLib implements CD_FindStdLib {
 	private Operation2<CompilerInstructions> foundResult;
 	private Eventual<CompilerInstructions> foundResultEv = new Eventual<>();
 
+	public final @NotNull Eventual<CompilerInstructions> findStdLib2(final GCR_State crState, final String aPreludeName) {
+		Eventual<Eventual<CompilerInstructions>> resident = new Eventual<>();
+		// TODO Does not look like it makes sense...
+		final Eventual<CompilerInstructions> res = __internal_findStdLib((CR_State) crState, aPreludeName, Soci -> findStdLib(crState, aPreludeName, oci -> resident.then(Sres-> {
+			if (oci.mode() != Mode.SUCCESS) {
+				throw new AssertionError();
+			}
+			if (Sres.isPending()) {
+				System.err.println("240930-0107 **NO** double set");
+				Sres.resolve(oci.success());
+			} else {
+				System.err.println("240930-0109 Double set");
+			}
+		})));
+		resident.resolve(res);
+		return res;
+	}
+
 	@Override
 	public void findStdLib(final GCR_State crState, final String aPreludeName, final Consumer<Operation2<CompilerInstructions>> coci) {
 		var x = __internal_findStdLib((CR_State) crState, aPreludeName, coci);
@@ -30,9 +48,17 @@ public class EDL_CD_FindStdLib implements CD_FindStdLib {
 		x.onFail(foundResultEv::reject);
 	}
 
-	private Eventual<CompilerInstructions> __internal_findStdLib(final @NotNull CR_State crState,
-																 final @NotNull String aPreludeName,
-																 final @NotNull Consumer<Operation2<CompilerInstructions>> coci) {
+
+	@Override
+	public CompilerInstructions maybeFoundResult() {
+		if (foundResult.mode() == Mode.SUCCESS)
+			return foundResult.success();
+		return null;
+	}
+
+	private @NotNull Eventual<CompilerInstructions> __internal_findStdLib(final @NotNull CR_State crState,
+																		  final @NotNull String aPreludeName,
+																		  final @NotNull Consumer<Operation2<CompilerInstructions>> coci) {
 		final ICompilationRunner    compilationRunner = crState.runner();
 		final /*EDL_I*/ Compilation cc                = (EDL_Compilation) compilationRunner._accessCompilation();
 		final CP_StdlibPath         slr               = cc.paths().stdlibRoot();
@@ -87,31 +113,6 @@ public class EDL_CD_FindStdLib implements CD_FindStdLib {
 			cie.reject(e); // honestly, expecting a problem here
 			return cie;
 		}
-	}
-
-	@Override
-	public CompilerInstructions maybeFoundResult() {
-		if (foundResult.mode() == Mode.SUCCESS)
-			return foundResult.success();
-		return null;
-	}
-
-	public final @NotNull Eventual<CompilerInstructions> findStdLib2(final GCR_State crState, final String aPreludeName) {
-		Eventual<Eventual<CompilerInstructions>> resident = new Eventual<>();
-		// TODO Does not look like it makes sense...
-		final Eventual<CompilerInstructions> res = __internal_findStdLib((CR_State) crState, aPreludeName, Soci -> findStdLib(crState, aPreludeName, oci -> resident.then(Sres-> {
-			if (oci.mode() != Mode.SUCCESS) {
-				throw new AssertionError();
-			}
-			if (Sres.isPending()) {
-				System.err.println("240930-0107 **NO** double set");
-				Sres.resolve(oci.success());
-			} else {
-				System.err.println("240930-0109 Double set");
-			}
-		})));
-		resident.resolve(res);
-		return res;
 	}
 
 	public Eventual<CompilerInstructions> getFoundResultEv() {

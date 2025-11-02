@@ -1,6 +1,7 @@
 package tripleo.elijah_elevated_durable.comp;
 
 import clojure.lang.*;
+import io.reactivex.rxjava3.core.*;
 import io.reactivex.rxjava3.core.Observer;
 import org.jdeferred2.*;
 import org.jetbrains.annotations.*;
@@ -25,6 +26,7 @@ import tripleo.elijah_durable_elevated.stages.deduce.fluffy.i.*;
 import tripleo.elijah_durable_elevated.world.i.*;
 import tripleo.elijah_elevated_durable.backbone.*;
 import tripleo.elijah_elevated_durable.lang_model.*;
+import tripleo.elijah_elevated_durable.parser.*;
 import tripleo.elijah_fluffy.util.*;
 import tripleo.graph.*;
 import tripleo.paths.*;
@@ -123,14 +125,18 @@ public interface EDL_ICompilation extends Compilation {
 	LangModel langModel();
 
 	default void feedInputsCon2(List<String> aStringList) {
-		var x= feedInputsCon(aStringList);
+		var x = feedInputsCon(aStringList);
 		NotImplementedException.raise_stop();
 	}
 
 	CompilerController feedInputsCon(List<String> aStringList);
 
 	void onConfig(DoneCallback<IPersistentMap>
-				  cb);
+						  cb);
+
+	PCon getPCon();
+
+	PConParser getPConParser();
 
 	void doPost();
 }

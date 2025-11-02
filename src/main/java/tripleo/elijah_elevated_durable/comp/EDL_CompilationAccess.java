@@ -5,7 +5,9 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.i.ICompilationAccess;
 import tripleo.elijah.g.*;
 import tripleo.elijah_durable_elevated.comp.*;
+import tripleo.elijah_durable_elevated.comp.internal.*;
 import tripleo.elijah_durable_elevated.stages.deduce.IFunctionMapHook;
+import tripleo.elijah_durable_elevated.stages.deduce.fluffy.i.*;
 import tripleo.elijah_durable_elevated.stages.logging.EDL_ElLog;
 
 import java.util.Collections;
@@ -27,13 +29,13 @@ public class EDL_CompilationAccess implements ICompilationAccess {
 	}
 
 	@Override
-	public void addPipeline(final GPipelineMember pl) {
-		pipelines.add((PipelineMember)pl);
+	public @NotNull List<GFunctionMapHook> functionMapHooks() {
+		return Collections.unmodifiableList(compilation.getCompilationEnclosure().getPipelineLogic().dp.getFunctionMapHooks());
 	}
 
 	@Override
-	public @NotNull List<GFunctionMapHook> functionMapHooks() {
-		return Collections.unmodifiableList(compilation.getCompilationEnclosure().getPipelineLogic().dp.getFunctionMapHooks());
+	public void addPipeline(final GPipelineMember pl) {
+		pipelines.add((PipelineMember)pl);
 	}
 
 	@Override
@@ -71,6 +73,16 @@ public class EDL_CompilationAccess implements ICompilationAccess {
 	@Override
 	public GCompilationEnclosure getCompilationEnclosure() {
 		return getCompilation().getCompilationEnclosure();
+	}
+
+	@Override
+	public FluffyComp getFluffy() {
+		return getCompilation().getFluffy();
+	}
+
+	@Override
+	public LCM lcm() {
+		return getCompilation().lcm();
 	}
 
 }

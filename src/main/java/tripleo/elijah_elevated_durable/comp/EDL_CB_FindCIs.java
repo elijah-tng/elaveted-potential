@@ -7,6 +7,7 @@ import tripleo.elijah.comp.percy.*;
 import tripleo.elijah_durable_elevated.comp.internal.*;
 import tripleo.elijah_durable_elevated.nextgen.comp_model.*;
 import tripleo.elijah_fluffy.util.*;
+import tripleo.elijah_potential.comp.xxinternal.*;
 import tripleo.wrap.*;
 
 import java.nio.file.*;
@@ -26,11 +27,11 @@ class EDL_CB_FindCIs implements CB_Action {
 
 	@Override
 	public void execute(CB_Monitor aMonitor) {
-//		final CK_Monitor       monitor11   = /*aMonitor;//*/compilationRunner.getCompilationEnclosure().getDefaultMonitor();
+		//final CK_Monitor       monitor11   = /*aMonitor;//*/compilationRunner.getCompilationEnclosure().getDefaultMonitor();
 		final CR_State         st = compilationRunner.getCrState();
 		final EDL_ICompilation c  = (EDL_ICompilation) st.ca().getCompilation();
 		final @NotNull ErrSink errSink = c.getErrSink();
-//		final CK_StepsContext  context   = new CD_CRS_StepsContext(st, o);
+		//final CK_StepsContext  context   = new CD_CRS_StepsContext(st, o);
 
 		for (final CompilerInput input : c.getCompilationEnclosure().getCompilerInput()) {
 			_processInput(c.getCompilationClosure(), errSink, input);
@@ -107,10 +108,6 @@ class EDL_CB_FindCIs implements CB_Action {
 		}
 	}
 
-	private void logProgress_Stating(final String aSection, final String aStatement) {
-		tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_out_3("** CB_FindCIs :: %s :: %s".formatted(aSection, aStatement));
-	}
-
 	private static void __CN_CompilerInputWatcher__event(final CN_CompilerInputWatcher.e aEvent, final CompilerInput aCompilerInput, final Object aObject) {
 		switch (aEvent) {
 		case ACCEPT_CI -> {
@@ -125,5 +122,9 @@ class EDL_CB_FindCIs implements CB_Action {
 			System.err.println("~~ [11/24 111] " + aEvent + " " + aCompilerInput);
 		}
 		}
+	}
+
+	private void logProgress_Stating(final String aSection, final String aStatement) {
+		tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_out_3("** CB_FindCIs :: %s :: %s".formatted(aSection, aStatement));
 	}
 }

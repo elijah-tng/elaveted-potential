@@ -5,18 +5,22 @@ import com.google.common.base.*;
 import org.jdeferred2.*;
 import org.jetbrains.annotations.*;
 import tripleo.elijah.ci.*;
+import tripleo.elijah.comp.i.*;
 import tripleo.elijah.comp.specs.*;
 import tripleo.elijah.compiler_model.*;
-import tripleo.elijah_elevated_durable.compiler_model.*;
 import tripleo.elijah_elevated_durable.comp.*;
 import tripleo.elijah_elevated_durable.comp.specs.*;
+import tripleo.elijah_elevated_durable.compiler_model.*;
 import tripleo.elijah_elevated_durable.parser.*;
 import tripleo.elijah_elevated_durable.parser.antlr2.*;
+import tripleo.elijah_fluffy.anno.*;
 import tripleo.elijah_fluffy.diagnostic.*;
 import tripleo.elijah_fluffy.util.*;
+import tripleo.wrap.*;
 import tripleo.wrap.File;
 
 import java.io.*;
+import java.util.*;
 import java.util.Optional;
 
 public class EzFileParser {
@@ -25,6 +29,8 @@ public class EzFileParser {
 	private       Operation2<CompilerInstructions> oci;
 	private       EzCache                          ezCache;
 	private       EDL_ICompilation                 compilation;
+	private @ElLateInit
+	@NotNull      ICompilationAccess               ca;
 
 	public EzFileParser() {
 		ev = new Eventual<>();
@@ -67,38 +73,17 @@ public class EzFileParser {
 
 					final CM_Ez cm = compilation.megaGrande(spec);
 
-					compilation.lcm().push(new LCM_Just__CM_Ez(cm, Sci));
+					ca.lcm().push(new LCM_Just__CM_Ez(cm, Sci));
 					cm.advise(ezCache.getCompilation().getObjectTree());
 				});
 			} else {
-//				ev.reject(cio.failure());
-				assert false;
+				//ev.reject(cio.failure());
+				NotImplementedException.raise_stop();
 			}
 		} catch (final IOException aE) {
 			final ExceptionDiagnostic d = new ExceptionDiagnostic(aE);
 			ev.reject(d);
 			return;
-		}
-	}
-
-	public class SNCI {
-		private Diagnostic diagnostic;
-
-		public CompilerInstructions get(final @NotNull EzParser parser, final String absolutePath) {
-			final PCon                 pcon         = new PCon();
-			final CompilerInstructions instructions = pcon.newCompilerInstructionsImpl();
-			instructions.setFilename(CM_Factory.Filename__of(absolutePath));
-
-			parser.pcon = pcon;
-			parser.ci   = instructions;
-
-			try {
-				parser.program();
-				return instructions;
-			} catch (final RecognitionException | TokenStreamException aE) {
-				this.diagnostic = new ExceptionDiagnostic(aE);
-				return null;
-			}
 		}
 	}
 
@@ -108,7 +93,7 @@ public class EzFileParser {
 		final EzParser parser = new EzParser(lexer);
 		parser.setFilename(aAbsolutePath);
 
-		final SNCI                 snci = new SNCI();
+		final SNCI                 snci = new SNCI(this.ca.getFluffy().getPCon());
 		final CompilerInstructions p    = snci.get(parser, aAbsolutePath);
 		if (p != null) {
 			ev.resolve(p);
@@ -123,6 +108,7 @@ public class EzFileParser {
 	public void configure(final EzCache aEzCache) {
 		ezCache     = aEzCache;
 		compilation = (EDL_ICompilation) ezCache.getCompilation();
+		ca          = compilation.getCompilationEnclosure().getCompilationAccess();
 	}
 
 	public void parse(final String aFileName, final File aFile, final Operation<InputStream> iso) {
@@ -136,5 +122,31 @@ public class EzFileParser {
 
 	public Eventual<CompilerInstructions> getEventual() {
 		return ev;
+	}
+
+	public class SNCI {
+		final PCon pcon;
+
+		private Diagnostic diagnostic;
+
+		public SNCI(final PCon aPcon) {
+			pcon = aPcon;
+		}
+
+		public CompilerInstructions get(final @NotNull EzParser parser, final String absolutePath) {
+			final CompilerInstructions instructions = pcon.newCompilerInstructionsImpl();
+			instructions.setFilename(CM_Factory.Filename__of(absolutePath));
+
+			parser.pcon = pcon;
+			parser.ci   = instructions;
+
+			try {
+				parser.program();
+				return instructions;
+			} catch (final RecognitionException | TokenStreamException aE) {
+				this.diagnostic = new ExceptionDiagnostic(aE);
+				return null;
+			}
+		}
 	}
 }

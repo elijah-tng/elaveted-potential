@@ -4,6 +4,7 @@ import org.jetbrains.annotations.*;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah_durable_elevated.comp.internal.*;
 import tripleo.elijah_durable_elevated.lang.impl.*;
+import tripleo.elijah_elevated_durable.parser.*;
 import tripleo.elijah_fluffy.util.*;
 import tripleo.graph.*;
 
@@ -13,12 +14,16 @@ public interface FluffyComp extends EventualRegister {
 	FluffyModule module(OS_Module aModule);
 
 	@Override
-	void checkFinishEventuals();
+	<P> void register(Eventual<P> e);
 
 	@Override
-	<P> void register(Eventual<P> e);
+	void checkFinishEventuals();
 
 	Operation<Ok> maybeCheckFinishEventuals();
 
 	Eventual<CK_SourceFile> exchange(ILazyCompilerInstructions_.FX_Ez aFXEz);
+
+	PCon getPCon();
+
+	PConParser getPConParser();
 }

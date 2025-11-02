@@ -49,6 +49,7 @@ import tripleo.elijah_durable_elevated.world.i.LivingRepo;
 import tripleo.elijah_elevated_durable.backbone.*;
 import tripleo.elijah_elevated_durable.comp.input.*;
 import tripleo.elijah_elevated_durable.lang_model.*;
+import tripleo.elijah_elevated_durable.parser.*;
 import tripleo.elijah_fluffy.util.*;
 import tripleo.graph.*;
 import tripleo.paths.*;
@@ -58,20 +59,14 @@ import java.util.Optional;
 import java.util.stream.*;
 
 public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
-	final                  Eventual<CompilerController>                                   ccP                   = new Eventual<>();
 	private final          List<CN_CompilerInputWatcher>                                  _ciws;
 	private final          Map<CompilerInput, CM_CompilerInput>                           _ci_models;
 	private final          List<Triple<CN_CompilerInputWatcher.e, CompilerInput, Object>> _ciw_buffer;
+	private final          List<CompilerInstructions>                                     xxx;
 	private final          FluffyCompImpl                                                 _fluffyComp;
-	//	@Getter
 	private final          CompilationConfig                                              cfg;
-	//	@Getter
 	private final          CompilationEnclosure                                           compilationEnclosure;
-	//	@Getter
 	private final          EDL_CIS                                                        _cis;
-	//	@Getter
-//	private final CK_Monitor                          defaultMonitor;
-//	@Getter
 	private final          USE                                                            use;
 	private final          CompFactory                                                    _con;
 	private final          LivingRepo                                                     _repo;
@@ -81,16 +76,15 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	private final          CompilerInputMaster                                            master;
 	private final          Finally                                                        _finally;
 	private final          CK_ObjectTree                                                  objectTree;
-	private final          List<CompilerInstructions>                                     xxx;
 	private final          CCI_Acceptor__CompilerInputListener                            cci_listener;
 	private final          PW_Controller                                                  pw_controller;
 	private final          LCM                                                            lcm;
 	private final @NotNull CK_Monitor                                                     defaultMonitor;
-	@SuppressWarnings("FieldCanBeLocal")
+	private final          Eventual<CompilerController>                                   ccP                   = new Eventual<>();
 	private final          Eventual<CP_Paths>                                             _p_pathsEventual      = new Eventual<>();
 	private final          Eventual<CompilerController>                                   _p_CompilerController = new Eventual<>();
-	private final          _A_megaGrande                                                  _a_megaGrande         = new _A_megaGrande();
 	private final          Eventual<Compilation>                                          _p_Postable;
+	private final          _A_megaGrande                                                  _a_megaGrande         = new _A_megaGrande();
 	private                JarWork                                                        jarwork;
 	private                EIT_InputTree                                                  _input_tree;
 	private                EOT_OutputTree                                                 _output_tree;
@@ -103,6 +97,7 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	private                CPX_Signals                                                    cpxSignals;
 	private                CompilationInterfaceRevised2                                   revised2;
 	private                EDL_LangModel                                                  langModel;
+	private                PCon                                                           _pcon;
 
 
 	public EDL_Compilation(final @NotNull ErrSink aErrSink, final IO aIo) {
@@ -413,9 +408,6 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public OS_Package makePackage(final Qualident pkg_name) {
 		return world().makePackage(pkg_name);
-	}	@Override
-	public int errorCount() {
-		return errSink.errorCount();
 	}
 
 	@Override
@@ -462,6 +454,9 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public EDL_CompilationRunner getRunner() {
 		return (EDL_CompilationRunner) getCompilationEnclosure().getCompilationRunner();
+	}	@Override
+	public int errorCount() {
+		return errSink.errorCount();
 	}
 
 	@Override
@@ -561,6 +556,16 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	}
 
 	@Override
+	public PCon getPCon() {
+		return getFluffy().getPCon();
+	}
+
+	@Override
+	public PConParser getPConParser() {
+		return getFluffy().getPConParser();
+	}
+
+	@Override
 	public void doPost() {
 		_p_Postable.resolve(this);
 	}
@@ -595,27 +600,21 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 		// pipelineLogic.dp.
 	}
 
-public CP_Paths _paths() {
+	public CP_Paths _paths() {
 		if (paths == null) {
 			throw new ProgramIsWrongIfYouAreHere("EDL_Compilation#_paths wasn't created yet");
 		}
 		return paths;
 	}
 
-		@Override
+	@Override
 	public <P> void register(final Eventual<P> aEventual) {
 		getFluffy().register(aEventual);
 	}
+
 	@Override
 	public void checkFinishEventuals() {
 		getFluffy().checkFinishEventuals();
-	}@Override
-	public void feedCmdLine(final @NotNull List<String> args) {
-		final CompilerController controller = new EDL_CompilerController(this.getCompilationAccess3());
-		ccP.resolve(controller);
-		final NonOpinionatedBuilder nob    = new NonOpinionatedBuilder();
-		final List<CompilerInput>   inputs = nob.inputs(args);
-		feedInputs(inputs, controller);
 	}
 
 	@Override
@@ -631,10 +630,14 @@ public CP_Paths _paths() {
 
 
 
-
-
-
-
+	@Override
+	public void feedCmdLine(final @NotNull List<String> args) {
+		final CompilerController controller = new EDL_CompilerController(this.getCompilationAccess3());
+		ccP.resolve(controller);
+		final NonOpinionatedBuilder nob    = new NonOpinionatedBuilder();
+		final List<CompilerInput>   inputs = nob.inputs(args);
+		feedInputs(inputs, controller);
+	}
 
 
 	public ICompilationAccess3 getCompilationAccess3() {
@@ -676,10 +679,6 @@ public CP_Paths _paths() {
 		return compilationAccess3;
 	}
 
-
-
-
-
 	@Override
 	public void setIO(final IO io) {
 		this.io = io;
@@ -689,7 +688,8 @@ public CP_Paths _paths() {
 	@Override
 	public void pushItem(CompilerInstructions aci) {
 		if (xxx.contains(aci)) {
-			tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4("** [CompilerInstructions::pushItem] duplicate instructions: " + aci.getFilename());
+			final String message = "** [CompilerInstructions::pushItem] duplicate instructions: " + aci.getFilename();
+			tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4(message);
 		} else {
 			xxx.add(aci);
 			_cis.onNext(aci);
@@ -937,6 +937,8 @@ public CP_Paths _paths() {
 	@Override
 	public boolean hasClojureSupport() {
 		var h = new Holder<Boolean>();
+		h.set(Boolean.FALSE); // beautiful ugliness
+		/// fixme wait for this
 		this._p_CompilerController.then(new DoneCallback<CompilerController>() {
 			@Override
 			public void onDone(final CompilerController result) {

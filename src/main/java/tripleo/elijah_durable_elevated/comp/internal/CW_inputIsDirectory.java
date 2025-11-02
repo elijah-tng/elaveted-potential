@@ -17,6 +17,6 @@ public class CW_inputIsDirectory {
 
 		input.setDirectoryResults(loci);
 
-		loci.
+		//loci. // fixme token for datalog
 	}
 }

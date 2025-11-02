@@ -11,6 +11,8 @@ import tripleo.elijah_durable_elevated.lang.impl.*;
 import tripleo.elijah_durable_elevated.stages.deduce.fluffy.i.*;
 import tripleo.elijah_durable_elevated.util.*;
 import tripleo.elijah_elevated_durable.comp.*;
+import tripleo.elijah_elevated_durable.parser.*;
+import tripleo.elijah_fluffy.anno.*;
 import tripleo.elijah_fluffy.util.*;
 import tripleo.graph.*;
 
@@ -18,12 +20,14 @@ import java.util.*;
 import java.util.stream.*;
 
 public class FluffyCompImpl implements FluffyComp, EventualRegister {
-	private final EDL_Compilation              _comp;
-	private final Map<OS_Module, FluffyModule> fluffyModuleMap = new HashMap<>();
-	private final FluffyCompImplInjector       __inj           = new FluffyCompImplInjector();
-	private final List<Eventual<?>>            _eventuals      = new ArrayList<>();
-	private final Map<FX_Base, Eventual<CM_Base>> exchanges = new HashMap<>();
-	private final DefaultEventualRegister         der;
+	private final       EDL_Compilation                 _comp;
+	private final       Map<OS_Module, FluffyModule>    fluffyModuleMap = new HashMap<>();
+	private final       FluffyCompImplInjector          __inj           = new FluffyCompImplInjector();
+	private final       List<Eventual<?>>               _eventuals      = new ArrayList<>();
+	private final       Map<FX_Base, Eventual<CM_Base>> exchanges       = new HashMap<>();
+	private final       DefaultEventualRegister         der;
+	private @ElLateInit PCon                            _pcon;
+	private @ElLateInit PConParser                      _pconParser;
 
 	public FluffyCompImpl(final EDL_Compilation aComp) {
 		_comp = aComp;
@@ -114,6 +118,12 @@ public class FluffyCompImpl implements FluffyComp, EventualRegister {
 	}
 
 	@Override
+	public <P> void register(final Eventual<P> e) {
+//		der.register(e);
+		_eventuals.add(e);
+	}
+
+	@Override
 	public void checkFinishEventuals() {
 		if (DebugFlags.MakeSense2) {
 			der.checkFinishEventuals();
@@ -127,12 +137,6 @@ public class FluffyCompImpl implements FluffyComp, EventualRegister {
 				}
 			}
 		}
-	}
-
-	@Override
-	public <P> void register(final Eventual<P> e) {
-//		der.register(e);
-		_eventuals.add(e);
 	}
 
 	@Override
@@ -154,6 +158,20 @@ public class FluffyCompImpl implements FluffyComp, EventualRegister {
 
 		final Eventual<CK_SourceFile> exch = new Eventual<>();
 		return exch;
+	}
+
+	@Override
+	public PCon getPCon() {
+		//LazyKt // no; use the groovy one
+		if (_pcon == null) _pcon = new PCon();
+		return _pcon;
+	}
+
+	@Override
+	public PConParser getPConParser() {
+		//LazyKt // no; use the groovy one
+		if (_pconParser == null) _pconParser = new PConParser();
+		return _pconParser;
 	}
 
 	@Override

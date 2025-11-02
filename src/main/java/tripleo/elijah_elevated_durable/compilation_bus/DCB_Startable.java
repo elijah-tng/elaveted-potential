@@ -21,6 +21,7 @@ public class DCB_Startable implements CompFactory.StartableI {
 		progressSink   = aProgressSink;
 	}
 
+	// fixme can't find the blog; this is otplike
 	@Override
 	public void run() {
 		// FIXME passing sh*t between threads (P.O.!)
@@ -36,7 +37,7 @@ public class DCB_Startable implements CompFactory.StartableI {
 				logProgress(DefaultCompilationBus_POLL_PROCESS_EMPTY_BEGIN, new Object[]{poll});
 				try {
 					Thread.sleep(500);
-//					x = 0; // who put this here?
+					//x = 0; // who put this here?
 				} catch (InterruptedException aE) {
 					//throw new RuntimeException(aE);
 				}

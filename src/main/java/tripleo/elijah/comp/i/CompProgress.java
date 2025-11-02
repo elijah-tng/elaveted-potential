@@ -52,9 +52,9 @@ public enum CompProgress {
 			if (directoryResult1 != null) {
 				final List<Operation2<CompilerInstructions>> directoryResult2 = directoryResult1.getDirectoryResult();
 
-				for (Operation2<CompilerInstructions> directoryResult : directoryResult2) {
-					if (directoryResult.mode() == Mode.SUCCESS) {
-						final CompilerInstructions compilerInstructions = directoryResult.success();
+				for (Operation2<CompilerInstructions> oci : directoryResult2) {
+					if (oci.mode() == Mode.SUCCESS) {
+						final CompilerInstructions compilerInstructions = oci.success();
 
 						out.println("[--- Ez directoryResult ] " + compilerInstructions.getFilename());
 					}
