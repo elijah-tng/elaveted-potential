@@ -26,4 +26,6 @@ public interface FluffyComp extends EventualRegister {
 	PCon getPCon();
 
 	PConParser getPConParser();
+
+	FluffyModels models();
 }

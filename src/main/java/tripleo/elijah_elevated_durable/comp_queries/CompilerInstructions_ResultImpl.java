@@ -47,9 +47,14 @@ public class CompilerInstructions_ResultImpl implements CompilerInstructions_Res
 				public void onDone(final Compilation result) {
 					final EDL_ICompilation Scomp = (EDL_ICompilation) result;
 					Scomp.megaGrande((EzSpec) null);
-					final CM_Ez cm = new EDL_CM_Ez();
+					final CM_Ez cm = ((EDL_ICompilation) result).getFluffy().models().createEz();
 					//cm.advise((EzSpec)null);
 					cm.advise(aCio);
+					{
+						final Eventual<CompilerInstructions> eci = new Eventual<>();
+						final var gcio=EDL_CM_Ez.GetCio.of(eci);
+						gcio.compilerInstructionsEventual().resolve(aCio.success());
+					}
 					//cm.advise(((Compilation)null).getObjectTree());
 					directoryResult2.add(cm);
 				}

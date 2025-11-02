@@ -11,6 +11,7 @@ import tripleo.elijah_durable_elevated.lang.impl.*;
 import tripleo.elijah_durable_elevated.stages.deduce.fluffy.i.*;
 import tripleo.elijah_durable_elevated.util.*;
 import tripleo.elijah_elevated_durable.comp.*;
+import tripleo.elijah_elevated_durable.compiler_model.*;
 import tripleo.elijah_elevated_durable.parser.*;
 import tripleo.elijah_fluffy.anno.*;
 import tripleo.elijah_fluffy.util.*;
@@ -28,6 +29,7 @@ public class FluffyCompImpl implements FluffyComp, EventualRegister {
 	private final       DefaultEventualRegister         der;
 	private @ElLateInit PCon                            _pcon;
 	private @ElLateInit PConParser                      _pconParser;
+	private @ElLateInit FluffyModels models;
 
 	public FluffyCompImpl(final EDL_Compilation aComp) {
 		_comp = aComp;
@@ -175,13 +177,21 @@ public class FluffyCompImpl implements FluffyComp, EventualRegister {
 	}
 
 	@Override
-	public @NotNull String _host() {
-		return null;
+	public FluffyModels models() {
+		if(models!=null) {
+			models = new FluffyModels() {
+				@Override
+				public CM_Ez createEz() {
+					return new EDL_CM_Ez();
+				}
+			};
+		}
+		return models;
 	}
 
-	//@Override
-	public <P> void register1(final Eventual<P> e) {
-
+	@Override
+	public @NotNull String _host() {
+		return null;
 	}
 
 	static class FluffyCompImplInjector {
