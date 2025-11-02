@@ -50,12 +50,12 @@ class Rule {
      */
     public boolean narrowerVisibility(Rule rule) {
         if (visibility.equals("public")) {
-            if (!rule.equals("public")) {
+            if (!"public".equals(rule.getVisibility())) {
                 return true; // everything narrower than public
             }
             return false;
         } else if (visibility.equals("protected")) {
-            if (rule.equals("private")) {
+            if ("private".equals(rule.getVisibility())) {
                 return true; // private narrower than protected
             }
             return false;
