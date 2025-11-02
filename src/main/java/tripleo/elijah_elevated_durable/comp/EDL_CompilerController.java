@@ -16,27 +16,26 @@ import tripleo.graph.*;
 import java.util.*;
 
 public class EDL_CompilerController implements CompilerController {
-	private final ICompilationAccess3    ca3;
-
-	private final List<EventualRegister> allRegisters = new ArrayList<>();
-	ICompilationBus     cb;
-	List<CompilerInput> inputs;
+	private final ICompilationAccess3      ca3;
+	private final List<EventualRegister>   allRegisters = new ArrayList<>();
+	private final Eventual<IPersistentMap> configP      = new Eventual<>();
+	private       ICompilationBus          cb;
+	private       List<CompilerInput>      inputs;
 	private       EDL_ICompilation         c;
-	private final Eventual<IPersistentMap> configP =new Eventual<>();
 
 	public EDL_CompilerController(final ICompilationAccess3 aCa3) {
 		ca3 = aCa3;
-	}
-
-	public void _setInputs(final Compilation aCompilation, final List<CompilerInput> aInputs) {
-		c      = (EDL_ICompilation) aCompilation;
-		inputs = aInputs;
 	}
 
 	@Override
 	public void setEnclosure(final GCompilationEnclosure aCompilationEnclosure) {
 		final CompilationEnclosure ce = (CompilationEnclosure) aCompilationEnclosure;
 		_setInputs(ce.getCompilation(), ce.getCompilerInput());
+	}
+
+	public void _setInputs(final Compilation aCompilation, final List<CompilerInput> aInputs) {
+		c      = (EDL_ICompilation) aCompilation;
+		inputs = aInputs;
 	}
 
 	@Override
@@ -63,10 +62,6 @@ public class EDL_CompilerController implements CompilerController {
 		runner(new _DefaultCon());
 	}
 
-	public void hook(final EDL_CompilationRunner aCr) {
-
-	}
-
 	@Override
 	public void runner(final @NotNull Con con) {
 		if (false) c.____m();
@@ -78,8 +73,8 @@ public class EDL_CompilerController implements CompilerController {
 		final ICompilationAccess compilationAccess = ce.getCompilationAccess();
 		assert compilationAccess != null;
 
-		final ICompilationRunner icr = con.newCompilationRunner(compilationAccess);
-		final EDL_CompilationRunner  cr  = (EDL_CompilationRunner) icr;
+		final ICompilationRunner    icr = con.newCompilationRunner(compilationAccess);
+		final EDL_CompilationRunner cr  = (EDL_CompilationRunner) icr;
 
 		ce.setCompilationRunner(cr);
 
@@ -107,16 +102,8 @@ public class EDL_CompilerController implements CompilerController {
 		V.exit();
 	}
 
-	public static class _DefaultCon implements Con {
-		@Override
-		public EDL_CompilationRunner newCompilationRunner(final ICompilationAccess compilationAccess) {
-			final CR_State          crState = new CR_State(compilationAccess);
-			final EDL_CompilationRunner cr      = new EDL_CompilationRunner(compilationAccess, crState);
+	public void hook(final EDL_CompilationRunner aCr) {
 
-			crState.setRunner(cr);
-
-			return cr;
-		}
 	}
 
 	@Override
@@ -147,5 +134,33 @@ public class EDL_CompilerController implements CompilerController {
 	@Override
 	public int errorCount() {
 		return this.c.errorCount();
+	}
+
+	public ICompilationBus getCb() {
+		return cb;
+	}
+
+	public void setCb(ICompilationBus aCb) {
+		cb = aCb;
+	}
+
+	public List<CompilerInput> getInputs() {
+		return inputs;
+	}
+
+	public void setInputs(List<CompilerInput> aInputs) {
+		inputs = aInputs;
+	}
+
+	public static class _DefaultCon implements Con {
+		@Override
+		public EDL_CompilationRunner newCompilationRunner(final ICompilationAccess compilationAccess) {
+			final CR_State              crState = new CR_State(compilationAccess);
+			final EDL_CompilationRunner cr      = new EDL_CompilationRunner(compilationAccess, crState);
+
+			crState.setRunner(cr);
+
+			return cr;
+		}
 	}
 }
