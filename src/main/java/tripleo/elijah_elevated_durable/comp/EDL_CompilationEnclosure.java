@@ -304,17 +304,15 @@ public class EDL_CompilationEnclosure
 
 	@Override
 	public void setCompilerInput(final List<CompilerInput> aInputs) {
-		//assert inp == null;
+		if (inp != null) {
+			throw new UnintendedUseException("Doing this wrong");
+		}
 
 		inp = aInputs;
-	}
 
-	@Override
-	public ModuleThing getModuleThing(final OS_Module aMod) {
-		if (moduleThings.containsKey(aMod)) {
-			return moduleThings.get(aMod);
-		}
-		return addModuleThing(aMod);
+		// fixme: eventual with a map list entries to ("Deduced") ProcessedCompilerInput
+		//  this eliminates damn near everything
+		//  where pci has a state and kicks to CM_ whatever (this is elevated 2.0)
 	}
 
 	@Contract(pure = true)
@@ -594,5 +592,5 @@ public class EDL_CompilationEnclosure
 }
 
 //
-// vim:set shiftwidth=4 softtabstop=0 noexpandtab:
+//
 //
