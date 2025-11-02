@@ -44,7 +44,6 @@ public class EDL_CompilationEnclosure
 	public final           Eventual<IPipelineAccess>                                        pipelineAccessPromise = new Eventual<>();
 	private final          Eventual<EDL_CompilationRunner>                                  ecr                   = new Eventual<>();
 	private final          Eventual<AccessBus>                                              accessBusPromise      = new Eventual<>();
-	private final          EDL_ICompilation                                                 compilation;
 	private final          CB_Output                                                        _cbOutput             = new CB_ListBackedOutput();
 	private final          Map<String, PipelinePlugin>                                      pipelinePlugins       = new HashMap<>();
 	private final          Map<OS_Module, ModuleThing>                                      moduleThings          = new HashMap<>();
@@ -53,10 +52,11 @@ public class EDL_CompilationEnclosure
 	private final          List<Triple<AssOutFile, EOT_FileNameProvider, NG_OutputRequest>> outFileAssertions     = new ArrayList<>();
 	private final @NonNull OFA                                                              ofa                   = new OFA(/* outFileAssertions */);
 	private final          ReactiveCompilationEnclosure                                     rce                   = new ReactiveCompilationEnclosure();
-	private                EDL_AccessBus                                                    ab;
+	private final          EDL_ICompilation                                                 compilation;
 	private                ICompilationAccess                                               ca;
 	private                ICompilationBus                                                  compilationBus;
 	private                EDL_CompilationRunner                                            compilationRunner;
+	private                EDL_AccessBus                                                    ab;
 	private                CompilerDriver                                                   compilerDriver;
 	private                List<CompilerInput>                                              inp;
 	private                EDL_IPipelineAccess                                              pa;
@@ -188,8 +188,6 @@ public class EDL_CompilationEnclosure
 
 	@Override
 	public void addReactive(@NotNull Reactivable r) {
-		int y = 2;
-		// reactivableObserver.onNext(r);
 		rce.addReactive(this, r);
 	}
 
@@ -413,6 +411,7 @@ public class EDL_CompilationEnclosure
 			});
 		}
 	}
+
 	private class ModuleListener_ModuleCompletableProcess implements CompletableProcess<WorldModule> {
 
 		@Override
@@ -454,7 +453,8 @@ public class EDL_CompilationEnclosure
 		}
 
 	}
-public class OFA implements Iterable<Triple<AssOutFile, EOT_FileNameProvider, NG_OutputRequest>> {
+
+	public class OFA implements Iterable<Triple<AssOutFile, EOT_FileNameProvider, NG_OutputRequest>> {
 
 		// public OFA(final List<Triple<AssOutFile, EOT_OutputFile.FileNameProvider,
 		// NG_OutputRequest>> aOutFileAssertions) {
@@ -477,23 +477,19 @@ public class OFA implements Iterable<Triple<AssOutFile, EOT_FileNameProvider, NG
 		public Iterator<Triple<AssOutFile, EOT_FileNameProvider, NG_OutputRequest>> iterator() {
 			return outFileAssertions.stream().iterator();
 		}
-	}@Override
+	}
+
+	@Override
 	@Contract(pure = true)
 	public @NotNull ICompilationAccess getCompilationAccess() {
 		return ca;
 	}
 
 
-
-
-
-		@Override
+	@Override
 	public void setCompilationAccess(@NotNull ICompilationAccess aca) {
 		ca = aca;
 	}
-
-
-
 
 
 	@Override
