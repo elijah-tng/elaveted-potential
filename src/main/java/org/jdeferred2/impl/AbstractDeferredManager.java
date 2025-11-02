@@ -91,7 +91,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 	public <F, V1, V2> Promise<MultipleResults2<V1, V2>, OneReject<F>, MasterProgress> when(Promise<V1, ?, ?> promiseV1, Promise<V2, ?, ?> promiseV2) {
 		assertNotNull(promiseV1, PROMISE_V1);
 		assertNotNull(promiseV2, PROMISE_V2);
-		return new MasterDeferredObject2(promiseV1, promiseV2);
+		return (Promise)new MasterDeferredObject2(promiseV1, promiseV2);
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(promiseV1, PROMISE_V1);
 		assertNotNull(promiseV2, PROMISE_V2);
 		assertNotNull(promiseV3, PROMISE_V3);
-		return new MasterDeferredObject3(promiseV1, promiseV2, promiseV3);
+		return (Promise)new MasterDeferredObject3(promiseV1, promiseV2, promiseV3);
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(promiseV2, PROMISE_V2);
 		assertNotNull(promiseV3, PROMISE_V3);
 		assertNotNull(promiseV4, PROMISE_V4);
-		return new MasterDeferredObject4(promiseV1, promiseV2, promiseV3, promiseV4);
+		return (Promise)new MasterDeferredObject4(promiseV1, promiseV2, promiseV3, promiseV4);
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(promiseV3, PROMISE_V3);
 		assertNotNull(promiseV4, PROMISE_V4);
 		assertNotNull(promiseV5, PROMISE_V5);
-		return new MasterDeferredObject5(promiseV1, promiseV2, promiseV3, promiseV4, promiseV5);
+		return (Promise)new MasterDeferredObject5(promiseV1, promiseV2, promiseV3, promiseV4, promiseV5);
 	}
 
 	@Override
@@ -132,7 +132,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 
 		Promise[] promiseN = new Promise[promises.length - 5];
 		System.arraycopy(promises, 5, promiseN, 0, promiseN.length);
-		return new MasterDeferredObjectN(promiseV1, promiseV2, promiseV3, promiseV4, promiseV5, promise6, promiseN);
+		return (Promise)new MasterDeferredObjectN(promiseV1, promiseV2, promiseV3, promiseV4, promiseV5, promise6, promiseN);
 	}
 
 	@Override
@@ -159,7 +159,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 			default:
 				Promise[] promiseN = new Promise[promises.length - 5];
 				System.arraycopy(promises, 5, promiseN, 0, promiseN.length);
-				return new MasterDeferredObjectN(promises[0], promises[1], promises[2], promises[3], promises[4], promises[5], promiseN);
+				return (Promise)new MasterDeferredObjectN(promises[0], promises[1], promises[2], promises[3], promises[4], promises[5], promiseN);
 		}
 	}
 
@@ -167,7 +167,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 	public <V1, V2> Promise<MultipleResults2<V1, V2>, OneReject<Throwable>, MasterProgress> when(Callable<V1> callableV1, Callable<V2> callableV2) {
 		assertNotNull(callableV1, CALLABLE_V1);
 		assertNotNull(callableV2, CALLABLE_V2);
-		return new MasterDeferredObject2(when(callableV1), when(callableV2));
+		return (Promise)new MasterDeferredObject2(when(callableV1), when(callableV2));
 	}
 
 	@Override
@@ -175,7 +175,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(callableV1, CALLABLE_V1);
 		assertNotNull(callableV2, CALLABLE_V2);
 		assertNotNull(callableV3, CALLABLE_V3);
-		return new MasterDeferredObject3(when(callableV1), when(callableV2), when(callableV3));
+		return (Promise)new MasterDeferredObject3(when(callableV1), when(callableV2), when(callableV3));
 	}
 
 	@Override
@@ -184,7 +184,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(callableV2, CALLABLE_V2);
 		assertNotNull(callableV3, CALLABLE_V3);
 		assertNotNull(callableV4, CALLABLE_V4);
-		return new MasterDeferredObject4(when(callableV1), when(callableV2), when(callableV3), when(callableV4));
+		return (Promise)new MasterDeferredObject4(when(callableV1), when(callableV2), when(callableV3), when(callableV4));
 	}
 
 	@Override
@@ -194,7 +194,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(callableV3, CALLABLE_V3);
 		assertNotNull(callableV4, CALLABLE_V4);
 		assertNotNull(callableV5, CALLABLE_V5);
-		return new MasterDeferredObject5(when(callableV1), when(callableV2), when(callableV3), when(callableV4), when(callableV5));
+		return (Promise)new MasterDeferredObject5(when(callableV1), when(callableV2), when(callableV3), when(callableV4), when(callableV5));
 	}
 
 	@Override
@@ -220,7 +220,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 				promiseN[i] = when(callables[i]);
 			}
 		}
-		return new MasterDeferredObjectN(promise1, promise2, promise3, promise4, promise5, when(callable6), promiseN);
+		return (Promise)new MasterDeferredObjectN(promise1, promise2, promise3, promise4, promise5, when(callable6), promiseN);
 	}
 
 	@Override
@@ -229,7 +229,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		DeferredRunnable<P2> runnableP2) {
 		assertNotNull(runnableP1, RUNNABLE_V1);
 		assertNotNull(runnableP2, RUNNABLE_V2);
-		return new MasterDeferredObject2(when(runnableP1), when(runnableP2));
+		return (Promise)new MasterDeferredObject2(when(runnableP1), when(runnableP2));
 	}
 
 	@Override
@@ -240,7 +240,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(runnableP1, RUNNABLE_V1);
 		assertNotNull(runnableP2, RUNNABLE_V2);
 		assertNotNull(runnableP3, RUNNABLE_V3);
-		return new MasterDeferredObject3(when(runnableP1), when(runnableP2), when(runnableP3));
+		return (Promise)new MasterDeferredObject3(when(runnableP1), when(runnableP2), when(runnableP3));
 	}
 
 	@Override
@@ -253,7 +253,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(runnableP2, RUNNABLE_V2);
 		assertNotNull(runnableP3, RUNNABLE_V3);
 		assertNotNull(runnableP4, RUNNABLE_V4);
-		return new MasterDeferredObject4(when(runnableP1), when(runnableP2), when(runnableP3), when(runnableP4));
+		return (Promise)new MasterDeferredObject4(when(runnableP1), when(runnableP2), when(runnableP3), when(runnableP4));
 	}
 
 	@Override
@@ -268,7 +268,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(runnableP3, RUNNABLE_V3);
 		assertNotNull(runnableP4, RUNNABLE_V4);
 		assertNotNull(runnableP5, RUNNABLE_V5);
-		return new MasterDeferredObject5(when(runnableP1), when(runnableP2), when(runnableP3), when(runnableP4), when(runnableP5));
+		return (Promise)new MasterDeferredObject5(when(runnableP1), when(runnableP2), when(runnableP3), when(runnableP4), when(runnableP5));
 	}
 
 	@Override
@@ -298,14 +298,14 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		for (int i = 0; i < runnables.length; i++) {
 			promiseN[i] = when(runnables[i]);
 		}
-		return new MasterDeferredObjectN(promise1, promise2, promise3, promise4, promise5, promise6, promiseN);
+		return (Promise)new MasterDeferredObjectN(promise1, promise2, promise3, promise4, promise5, promise6, promiseN);
 	}
 
 	@Override
 	public <V1, V2> Promise<MultipleResults2<V1, V2>, OneReject<Throwable>, MasterProgress> when(DeferredCallable<V1, ?> callableV1, DeferredCallable<V2, ?> callableV2) {
 		assertNotNull(callableV1, CALLABLE_V1);
 		assertNotNull(callableV2, CALLABLE_V2);
-		return new MasterDeferredObject2(when(callableV1), when(callableV2));
+		return (Promise)new MasterDeferredObject2(when(callableV1), when(callableV2));
 	}
 
 	@Override
@@ -313,7 +313,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(callableV1, CALLABLE_V1);
 		assertNotNull(callableV2, CALLABLE_V2);
 		assertNotNull(callableV3, CALLABLE_V3);
-		return new MasterDeferredObject3(when(callableV1), when(callableV2), when(callableV3));
+		return (Promise)new MasterDeferredObject3(when(callableV1), when(callableV2), when(callableV3));
 	}
 
 	@Override
@@ -322,7 +322,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(callableV2, CALLABLE_V2);
 		assertNotNull(callableV3, CALLABLE_V3);
 		assertNotNull(callableV4, CALLABLE_V4);
-		return new MasterDeferredObject4(when(callableV1), when(callableV2), when(callableV3), when(callableV4));
+		return (Promise)new MasterDeferredObject4(when(callableV1), when(callableV2), when(callableV3), when(callableV4));
 	}
 
 	@Override
@@ -332,7 +332,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(callableV3, CALLABLE_V3);
 		assertNotNull(callableV4, CALLABLE_V4);
 		assertNotNull(callableV5, CALLABLE_V5);
-		return new MasterDeferredObject5(when(callableV1), when(callableV2), when(callableV3), when(callableV4), when(callableV5));
+		return (Promise)new MasterDeferredObject5(when(callableV1), when(callableV2), when(callableV3), when(callableV4), when(callableV5));
 	}
 
 	@Override
@@ -355,14 +355,14 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		for (int i = 0; i < callables.length; i++) {
 			promiseN[i] = when(callables[i]);
 		}
-		return new MasterDeferredObjectN(promise1, promise2, promise3, promise4, promise5, promise6, promiseN);
+		return (Promise)new MasterDeferredObjectN(promise1, promise2, promise3, promise4, promise5, promise6, promiseN);
 	}
 
 	@Override
 	public <V1, V2> Promise<MultipleResults2<V1, V2>, OneReject<Throwable>, MasterProgress> when(DeferredFutureTask<V1, ?> taskV1, DeferredFutureTask<V2, ?> taskV2) {
 		assertNotNull(taskV1, TASK_V1);
 		assertNotNull(taskV2, TASK_V2);
-		return new MasterDeferredObject2(when(taskV1), when(taskV2));
+		return (Promise)new MasterDeferredObject2(when(taskV1), when(taskV2));
 	}
 
 	@Override
@@ -370,7 +370,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(taskV1, TASK_V1);
 		assertNotNull(taskV2, TASK_V2);
 		assertNotNull(taskV3, TASK_V3);
-		return new MasterDeferredObject3(when(taskV1), when(taskV2), when(taskV3));
+		return (Promise)new MasterDeferredObject3(when(taskV1), when(taskV2), when(taskV3));
 	}
 
 	@Override
@@ -379,7 +379,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(taskV2, TASK_V2);
 		assertNotNull(taskV3, TASK_V3);
 		assertNotNull(taskV4, TASK_V4);
-		return new MasterDeferredObject4(when(taskV1), when(taskV2), when(taskV3), when(taskV4));
+		return (Promise)new MasterDeferredObject4(when(taskV1), when(taskV2), when(taskV3), when(taskV4));
 	}
 
 	@Override
@@ -389,7 +389,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(taskV3, TASK_V3);
 		assertNotNull(taskV4, TASK_V4);
 		assertNotNull(taskV5, TASK_V5);
-		return new MasterDeferredObject5(when(taskV1), when(taskV2), when(taskV3), when(taskV4), when(taskV5));
+		return (Promise)new MasterDeferredObject5(when(taskV1), when(taskV2), when(taskV3), when(taskV4), when(taskV5));
 	}
 
 	@Override
@@ -412,14 +412,14 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		for (int i = 0; i < tasks.length; i++) {
 			promiseN[i] = when(tasks[i]);
 		}
-		return new MasterDeferredObjectN(promise1, promise2, promise3, promise4, promise5, promise6, promiseN);
+		return (Promise)new MasterDeferredObjectN(promise1, promise2, promise3, promise4, promise5, promise6, promiseN);
 	}
 
 	@Override
 	public <V1, V2> Promise<MultipleResults2<V1, V2>, OneReject<Throwable>, MasterProgress> when(Future<V1> futureV1, Future<V2> futureV2) {
 		assertNotNull(futureV1, FUTURE_V1);
 		assertNotNull(futureV2, FUTURE_V2);
-		return new MasterDeferredObject2(when(futureV1), when(futureV2));
+		return (Promise)new MasterDeferredObject2(when(futureV1), when(futureV2));
 	}
 
 	@Override
@@ -427,7 +427,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(futureV1, FUTURE_V1);
 		assertNotNull(futureV2, FUTURE_V2);
 		assertNotNull(futureV3, FUTURE_V3);
-		return new MasterDeferredObject3(when(futureV1), when(futureV2), when(futureV3));
+		return (Promise)new MasterDeferredObject3(when(futureV1), when(futureV2), when(futureV3));
 	}
 
 	@Override
@@ -436,7 +436,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(futureV2, FUTURE_V2);
 		assertNotNull(futureV3, FUTURE_V3);
 		assertNotNull(futureV4, FUTURE_V4);
-		return new MasterDeferredObject4(when(futureV1), when(futureV2), when(futureV3), when(futureV4));
+		return (Promise)new MasterDeferredObject4(when(futureV1), when(futureV2), when(futureV3), when(futureV4));
 	}
 
 	@Override
@@ -446,7 +446,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		assertNotNull(futureV3, FUTURE_V3);
 		assertNotNull(futureV4, FUTURE_V4);
 		assertNotNull(futureV5, FUTURE_V5);
-		return new MasterDeferredObject5(when(futureV1), when(futureV2), when(futureV3), when(futureV4), when(futureV5));
+		return (Promise)new MasterDeferredObject5(when(futureV1), when(futureV2), when(futureV3), when(futureV4), when(futureV5));
 	}
 
 	@Override
@@ -469,7 +469,7 @@ public abstract class AbstractDeferredManager implements DeferredManager {
 		for (int i = 0; i < futures.length; i++) {
 			promiseN[i] = when(futures[i]);
 		}
-		return new MasterDeferredObjectN(promise1, promise2, promise3, promise4, promise5, promise6, promiseN);
+		return (Promise)new MasterDeferredObjectN(promise1, promise2, promise3, promise4, promise5, promise6, promiseN);
 	}
 
 	@Override
