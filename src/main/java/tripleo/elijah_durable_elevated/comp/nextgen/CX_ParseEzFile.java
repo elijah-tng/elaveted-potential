@@ -27,9 +27,14 @@ public enum CX_ParseEzFile {
 		final @NotNull Operation<InputStream>  cis = Objects.requireNonNull(aSpec.sis());
 		final Operation2<CompilerInstructions> cio;
 
+		final Eventual<CompilerInstructions> eci = new Eventual<>();
+		final var gcio=EDL_CM_Ez.GetCio.of(eci);
+
+
 		if (cis.mode() == Mode.SUCCESS) {
 			cio = calculate(aSpec.file_name_string(), cis.success());
 			final CompilerInstructions R = cio.success();
+			gcio.compilerInstructionsEventual().resolve(R);
 			aEzCache.put(aSpec, absolutePath, R);
 
 			final CM_Ez cm = ((EDL_ICompilation) aEzCache.getCompilation()).megaGrande(aSpec);
