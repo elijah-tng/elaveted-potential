@@ -14,7 +14,7 @@ public enum CompilationFactory {
 
 	@Contract(" -> new")
 	public static @NotNull EDL_Compilation mkCompilation0() {
-		return mkCompilation(new StdErrSink(), new EDL_IO());
+		return mkCompilation(new EDL_ErrSink(), new EDL_IO());
 	}
 
 	@Contract("_, _ -> new")
@@ -25,7 +25,7 @@ public enum CompilationFactory {
 	}
 
 	public static @NotNull EDL_Compilation mkCompilation2(final List<IFunctionMapHook> aMapHooks) {
-		final StdErrSink errSink = new StdErrSink();
+		final EDL_ErrSink errSink = new EDL_ErrSink();
 		final IO         io      = new EDL_IO();
 
 		final @NotNull EDL_Compilation c = mkCompilation(errSink, io);

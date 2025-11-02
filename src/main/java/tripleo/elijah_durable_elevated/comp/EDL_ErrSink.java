@@ -21,14 +21,14 @@ import java.util.*;
 /**
  * @author tripleo(sb)
  */
-public class StdErrSink implements ErrSink {
+public class EDL_ErrSink implements ErrSink {
 	private final @NotNull List<Pair<Errors, Object>> _list = new ArrayList<>();
 	private                int                        _errorCount;
 
-	@Override
-	public void reportError(final int code, final String message) {
-		reportError("{{ErrSink::ERROR}} " + code + " " + message);
-	}
+//	@Override
+//	public void reportError(final int code, final String message) {
+//		reportError("{{ErrSink::ERROR}} " + code + " " + message);
+//	}
 
 	@Override
 	public int errorCount() {
@@ -74,6 +74,30 @@ public class StdErrSink implements ErrSink {
 		_list.add(Pair.of(Errors.WARNING, message));
 		System.err.printf("WARNING: %s%n", message);
 	}
+
+	@Override
+	public void reportError(int code, String message0) {
+		String message = String.format("%d %s", code, message0);
+		reportError(message);
+	}
+
+//	@Override
+//	public void reportDiagnostic(ElDiagnostic diagnostic) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public Pair<Desc, Object> _error(int index) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public List<Pair<Desc, Object>> _errors() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 }
 
 //
