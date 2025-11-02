@@ -1,5 +1,6 @@
 package tripleo.elijah.compiler_model;
 
+import org.jetbrains.annotations.*;
 import tripleo.elijah.ci.*;
 import tripleo.elijah.comp.queries.*;
 import tripleo.elijah.comp.specs.*;
@@ -18,6 +19,10 @@ public interface CM_Ez extends CM_Base {
 	EzSpec spec();
 
 	CK_SourceFile sourceFile();
+
+	default /*@NotNull*/ QSEZ_Reasoning getReasoning() {
+		throw new UnintendedUseException("Implement this if you need it");
+	}
 
 	String hash(); // Let's not Operation2
 }

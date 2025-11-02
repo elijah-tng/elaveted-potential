@@ -26,7 +26,7 @@ public class LCM_JustEventListener {
 	@Subscribe
 	public void _LCM_Just__CM_Ez(final @NotNull LCM_Just__CM_Ez aCMEz) {
 		LOG.info("do event [" + aCMEz + "]");
-		int y = 2;
+		NotImplementedException.raise_stop();
 		eventsHandled++;
 	}
 

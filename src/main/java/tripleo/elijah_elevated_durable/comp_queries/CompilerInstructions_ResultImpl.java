@@ -1,5 +1,6 @@
 package tripleo.elijah_elevated_durable.comp_queries;
 
+import lombok.*;
 import org.apache.commons.lang3.tuple.*;
 import org.jdeferred2.*;
 import org.jetbrains.annotations.*;
@@ -21,8 +22,8 @@ import java.util.stream.*;
 public class CompilerInstructions_ResultImpl implements CompilerInstructions_Result {
 	private final List<Pair<Operation2<CompilerInstructions>, QSEZ_Reasoning>> directoryResult  = new ArrayList<>();
 	private final List<CM_Ez>                                                  directoryResult2 = new ArrayList<>();
+	@Getter
 	private       File                                                         directory;
-	//private       QuerySearchEzFiles                                           q;
 	private       Eventual<Compilation>                                        compilationP     = new Eventual<>();
 
 	@Override

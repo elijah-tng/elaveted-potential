@@ -16,5 +16,7 @@ public class CW_inputIsDirectory {
 		final CompilerInstructions_Result loci      = q.process(directory);
 
 		input.setDirectoryResults(loci);
+
+		loci.
 	}
 }

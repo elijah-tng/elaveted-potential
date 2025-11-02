@@ -81,7 +81,7 @@ public class EDL_CP_Paths implements CP_Paths {
 						return;
 					} else if (atom0 instanceof IFn) {
 						IFn fn = (IFn) atom0;
-						if (false) fn.invoke();
+						if (false) fn.invoke(cp_OutputPath);
 						NotImplementedException.raise_stop();
 						System.err.println("[TRACE] Clojure atom found for " + S + " is a IFn");
 						return;

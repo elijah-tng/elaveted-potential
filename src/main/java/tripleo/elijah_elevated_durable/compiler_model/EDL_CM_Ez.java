@@ -1,5 +1,6 @@
 package tripleo.elijah_elevated_durable.compiler_model;
 
+import lombok.*;
 import org.jetbrains.annotations.*;
 import tripleo.elijah.ci.*;
 import tripleo.elijah.comp.queries.*;
@@ -9,20 +10,16 @@ import tripleo.elijah_fluffy.util.*;
 import tripleo.graph.*;
 
 public class EDL_CM_Ez implements CM_Ez {
+	@Getter
 	private EzSpec                           spec;
+	@Getter
 	private Operation2<CompilerInstructions> cio;
-	@SuppressWarnings("FieldCanBeLocal")
+	@Getter
 	private QSEZ_Reasoning                   reasoning;
-	private String                           _hash;
-	private CK_SourceFile _sourceFile;
-
-	public void setHash(final String a_hash) {
-		_hash = a_hash;
-	}
-
-	public void setSourceFile(final CK_SourceFile a_sourceFile) {
-		_sourceFile = a_sourceFile;
-	}
+	@Getter
+	private String                           hash;
+	@Getter
+	private CK_SourceFile                    sourceFile;
 
 	@Override
 	public void advise(final EzSpec aSpec) {
@@ -52,11 +49,11 @@ public class EDL_CM_Ez implements CM_Ez {
 
 	@Override
 	public CK_SourceFile sourceFile() {
-		return this._sourceFile;
+		return getSourceFile();
 	}
 
 	@Override
 	public String hash() {
-		return this._hash;
+		return getHash();
 	}
 }

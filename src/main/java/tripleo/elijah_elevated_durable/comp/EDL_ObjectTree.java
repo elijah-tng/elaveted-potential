@@ -1,5 +1,6 @@
 package tripleo.elijah_elevated_durable.comp;
 
+import com.google.common.base.*;
 import org.jetbrains.annotations.*;
 import tripleo.elijah.comp.*;
 import tripleo.elijah.comp.specs.*;
@@ -12,9 +13,9 @@ import tripleo.elijah_fluffy.util.*;
 import tripleo.graph.*;
 import tripleo.paths.*;
 
-public class EDL_ObjectTree implements CK_ObjectTree , Postable {
+public class EDL_ObjectTree implements CK_ObjectTree, Postable {
 	private @ElLateInit EDL_Compilation compilation;
-	private @ElLateInit  EIT_ModuleList  moduleList;
+	private @ElLateInit EIT_ModuleList  moduleList;
 
 	public EDL_ObjectTree(final EDL_Compilation aCompilation) {
 		compilation = aCompilation;
@@ -60,9 +61,8 @@ public class EDL_ObjectTree implements CK_ObjectTree , Postable {
 	}
 
 	private void checkDefault() {
-		// fixme: no guava w/o lsp
-		assert (null != compilation);
-		assert (null != moduleList);
+		Preconditions.checkNotNull(compilation);
+		Preconditions.checkNotNull(moduleList);
 	}
 
 	@Override
@@ -99,8 +99,9 @@ public class EDL_ObjectTree implements CK_ObjectTree , Postable {
 	public void accept(final Compilation aCompilation) {
 		if (aCompilation instanceof EDL_Compilation) {
 			compilation = (EDL_Compilation) aCompilation;
-			if (compilation.hasClojureSupport()) {}else {
-				moduleList  = new EIT_ModuleList_();
+			if (compilation.hasClojureSupport()) {
+			} else {
+				moduleList = new EIT_ModuleList_();
 			}
 		} else {
 			throw new AssertionError();
