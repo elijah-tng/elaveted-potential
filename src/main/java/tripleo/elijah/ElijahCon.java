@@ -2,7 +2,6 @@ package tripleo.elijah;
 
 import org.jdeferred2.*;
 import tripleo.elijah.comp.i.*;
-import tripleo.elijah_durable_elevated.comp.*;
 import tripleo.elijah_durable_elevated.factory.comp.*;
 import tripleo.elijah_elevated_durable.comp.*;
 
