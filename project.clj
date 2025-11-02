@@ -11,6 +11,11 @@
                   ]
   :dependencies
   [[org.clojure/clojure "1.12.0"]
+  
+  [rp-addons/rp-addons "0.1.0-SNAPSHOT"]
+
+[leiningen "2.12.0"]
+;;leiningen/leiningen {:mvn/version "2.12.0"}
 
    ;[org.clojure/spec.alpha "0.5.238"]
    ;[org.clojure/core.specs.alpha "0.4.74"]
