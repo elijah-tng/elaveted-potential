@@ -100,6 +100,7 @@ public class EDL_ObjectTree implements CK_ObjectTree, Postable {
 		if (aCompilation instanceof EDL_Compilation) {
 			compilation = (EDL_Compilation) aCompilation;
 			if (compilation.hasClojureSupport()) {
+				moduleList = new EIT_ModuleList_(); // implement this in clojure
 			} else {
 				moduleList = new EIT_ModuleList_();
 			}
