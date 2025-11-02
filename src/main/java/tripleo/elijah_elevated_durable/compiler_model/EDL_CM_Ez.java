@@ -52,8 +52,18 @@ public class EDL_CM_Ez implements CM_Ez {
 		return getSourceFile();
 	}
 
+	// antilombok
+	private CK_SourceFile getSourceFile() {
+		return this.sourceFile;
+	}
+
 	@Override
 	public String hash() {
 		return getHash();
+	}
+
+	// antilombok
+	private String getHash() {
+		return this.hash;
 	}
 }
