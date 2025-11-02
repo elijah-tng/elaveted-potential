@@ -31,14 +31,33 @@ import java.util.*;
 import java.util.Objects;
 
 class EDL_CompFactory implements CompFactory {
-	private final EDL_Compilation           compilation;
 	private final Eventual<EDL_Compilation> compilationP = new Eventual<>("EDL_CompFactory::postable-compilation");
-	private       CM_UleLog                 _log;
 
-	public EDL_CompFactory(EDL_Compilation aCompilation) {
+	private /*final*/ EDL_Compilation compilation;
+	private           CM_UleLog       _log;
+
+	{
+		compilationP.then(Sc->compilation=Sc);
+	}
+
+	public EDL_CompFactory() {
+		//compilation = aCompilation;
+		////assert compilation != null;
+		//Preconditions.checkNotNull(compilation, "Compilation cannot be null for EDL_CompFactory");
+		//compilationP.resolve(compilation);
+	}
+
+	/*public EDL_CompFactory(EDL_Compilation aCompilation) {
 		compilation = aCompilation;
 		//assert compilation != null;
 		Preconditions.checkNotNull(compilation, "Compilation cannot be null for EDL_CompFactory");
+		compilationP.resolve(compilation);
+	}*/
+
+	public void setCompilation(EDL_Compilation aCompilation) {
+		//compilation = aCompilation;
+		////assert compilation != null;
+		Preconditions.checkNotNull(aCompilation, "Compilation cannot be null for EDL_CompFactory");
 		compilationP.resolve(compilation);
 	}
 
@@ -75,8 +94,12 @@ class EDL_CompFactory implements CompFactory {
 	@Override
 	public CK_ObjectTree createObjectTree() {
 		final EDL_ObjectTree res = new EDL_ObjectTree();
-		compilationP.then(Sc -> Sc.post_((Postable) res));
+		_post((Postable) res);
 		return res;
+	}
+
+	private void _post(final Postable res) {
+		compilationP.then(Sc -> Sc.post_(res));
 	}
 
 	@Contract("_ -> new")
