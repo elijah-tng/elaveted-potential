@@ -1,7 +1,9 @@
 package tripleo.elijah_elevated_durable.comp;
 
 import io.reactivex.rxjava3.annotations.*;
+import io.reactivex.rxjava3.core.*;
 import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.*;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.subjects.*;
 import org.apache.commons.lang3.tuple.*;
@@ -39,10 +41,10 @@ public class EDL_CompilationEnclosure
 		CompilationEnclosure
 //		, EDL_SPI_CompilationEnclosure
 				, EDL_SPI_PipelineAccess {
-	public final  Eventual<IPipelineAccess>       pipelineAccessPromise = new Eventual<>();
-	private final Eventual<EDL_CompilationRunner> ecr                   = new Eventual<>();
-	private final Eventual<AccessBus>             accessBusPromise      = new Eventual<>();
-	private final EDL_ICompilation                compilation;
+	public final           Eventual<IPipelineAccess>                                        pipelineAccessPromise = new Eventual<>();
+	private final          Eventual<EDL_CompilationRunner>                                  ecr                   = new Eventual<>();
+	private final          Eventual<AccessBus>                                              accessBusPromise      = new Eventual<>();
+	private final          EDL_ICompilation                                                 compilation;
 	private final          CB_Output                                                        _cbOutput             = new CB_ListBackedOutput();
 	private final          Map<String, PipelinePlugin>                                      pipelinePlugins       = new HashMap<>();
 	private final          Map<OS_Module, ModuleThing>                                      moduleThings          = new HashMap<>();
@@ -59,9 +61,9 @@ public class EDL_CompilationEnclosure
 	private                ICompilationBus                                                  compilationBus;
 	private                EDL_CompilationRunner                                            compilationRunner;
 	private                CompilerDriver                                                   compilerDriver;
-	private List<CompilerInput> inp;
-	private EDL_IPipelineAccess pa;
-	private EDL_PipelineLogic   pipelineLogic;
+	private                List<CompilerInput>                                              inp;
+	private                EDL_IPipelineAccess                                              pa;
+	private                EDL_PipelineLogic                                                pipelineLogic;
 
 	public EDL_CompilationEnclosure(final EDL_ICompilation aCompilation) {
 		compilation = aCompilation;
@@ -112,25 +114,48 @@ public class EDL_CompilationEnclosure
 		this.pa = pa;
 	}
 
-	//	@Override
 	@Override
-	public void addEntryPoint(final @NotNull Mirror_EntryPoint aMirrorEntryPoint, final IClassGenerator dcg) {
-		aMirrorEntryPoint.generate(dcg);
+	@Contract(pure = true)
+	public EDL_ICompilation getCompilation() {
+		return compilation;
+	}
+
+	@Contract(pure = true)
+	@Override
+	public @NotNull Eventual<IPipelineAccess> getPipelineAccessPromise() {
+		return pipelineAccessPromise;
+	}
+
+	@Contract(pure = true)
+	@Override
+	public EDL_PipelineLogic getPipelineLogic() {
+		return pipelineLogic;
 	}
 
 	@Override
-	public void addModuleListener(final ModuleListener aModuleListener) {
-		_moduleListeners.add(aModuleListener);
+	public void setPipelineLogic(final EDL_PipelineLogic aPipelineLogic) {
+		pipelineLogic = aPipelineLogic;
+
+		getPipelineAccessPromise().then(pa -> pa.resolvePipelinePromise(aPipelineLogic));
 	}
 
 	@Override
-	public @NotNull ModuleThing addModuleThing(final OS_Module aMod) {
-		var mt = new ModuleThing(aMod);
-		moduleThings.put(aMod, mt);
-		return mt;
+	public void logProgress(final @NotNull CompProgress aCompProgress, final Object x) {
+		aCompProgress.deprecated_print(x, System.out, System.err);
 	}
 
 	@Override
+	public void noteAccept(final @NotNull WorldModule aWorldModule) {
+		var mod = aWorldModule.module();
+		var aMt = EventualExtract.of(aWorldModule.getErq()).mt();
+		tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4(mod);
+		//tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4(aMt);
+	}/**/
+
+	@Override
+	public @NonNull OFA OutputFileAsserts() {
+		return ofa;
+	}	@Override
 	public void addReactive(@NotNull Reactivable r) {
 		int y = 2;
 		// reactivableObserver.onNext(r);
@@ -162,6 +187,28 @@ public class EDL_CompilationEnclosure
 	}
 
 	@Override
+	public void reactiveJoin(final Reactive aReactive) {
+		// throw new IllegalStateException("Error");
+
+		// aReactive.join();
+		tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4("reactiveJoin " + aReactive.toString());
+	}
+
+	@Override
+	public void setCompilerDriver(final CompilerDriver aCompilerDriver) {
+		compilerDriver = aCompilerDriver;
+	}
+
+	//	@Override
+	@Override
+	public void addEntryPoint(final @NotNull Mirror_EntryPoint aMirrorEntryPoint, final IClassGenerator dcg) {
+		aMirrorEntryPoint.generate(dcg);
+	}
+
+	@Override
+	public void addModuleListener(final ModuleListener aModuleListener) {
+		_moduleListeners.add(aModuleListener);
+	}	@Override
 	public void addReactive(@NotNull Reactive r) {
 		dimensionSubject.subscribe(new Observer<ReactiveDimension>() {
 			@Override
@@ -187,6 +234,26 @@ public class EDL_CompilationEnclosure
 	}
 
 	@Override
+	public GModuleThing addModuleThing(final GOS_Module aModule) {
+		return addModuleThing((OS_Module) aModule);
+	}
+
+	@Override
+	public @NotNull ModuleThing addModuleThing(final OS_Module aMod) {
+		var mt = new ModuleThing(aMod);
+		moduleThings.put(aMod, mt);
+		return mt;
+	}
+
+	@Override
+	public void logProgress(final CompProgress aCompProgress, final Pair<Integer, String> aCodeMessagePair) {
+		aCompProgress.deprecated_print(aCodeMessagePair, System.out, System.err);
+	}
+
+	@Override
+	public GModuleThing getModuleThing(final GOS_Module aModule) {
+		return getModuleThing((OS_Module) aModule);
+	}	@Override
 	public void addReactiveDimension(final ReactiveDimension aReactiveDimension) {
 		dimensionSubject.onNext(aReactiveDimension);
 
@@ -216,6 +283,65 @@ public class EDL_CompilationEnclosure
 	}
 
 	@Override
+	public ModuleThing getModuleThing(final OS_Module aMod) {
+		if (moduleThings.containsKey(aMod)) {
+			return moduleThings.get(aMod);
+		}
+		return addModuleThing(aMod);
+	}
+
+	@Contract(pure = true)
+	@Override
+	public EDL_IPipelineAccess getPipelineAccess() {
+		return pa;
+	}
+
+	private static class __ReactivableObserver implements Observer<Reactivable> {
+
+		@Override
+		public void onSubscribe(@NonNull final Disposable d) {
+			throw new UnintendedUseException();
+		}
+
+		@Override
+		public void onNext(@NonNull final Reactivable aReactivable) {
+//			ReplaySubject
+			throw new UnintendedUseException();
+		}
+
+		@Override
+		public void onError(@NonNull final Throwable e) {
+			throw new UnintendedUseException();
+		}
+
+		@Override
+		public void onComplete() {
+			throw new UnintendedUseException();
+		}
+	}
+
+	private static class __ReactiveDimensionObserver implements Observer<ReactiveDimension> {
+		@Override
+		public void onSubscribe(@NonNull final Disposable d) {
+			throw new UnintendedUseException();
+		}
+
+		@Override
+		public void onNext(@NonNull final ReactiveDimension aReactiveDimension) {
+			// aReactiveDimension.observe();
+			throw new UnintendedUseException();
+		}
+
+		@Override
+		public void onError(@NonNull final Throwable e) {
+			throw new UnintendedUseException();
+		}
+
+		@Override
+		public void onComplete() {
+			throw new UnintendedUseException();
+		}
+	}	@Override
 	public void AssertOutFile(final @NotNull NG_OutputRequest aOutputRequest) {
 		var fileName = aOutputRequest.fileName();
 		if (fileName instanceof OutputStrategyC.OSC_NFC nfc) {
@@ -229,10 +355,84 @@ public class EDL_CompilationEnclosure
 		}
 	}
 
+	private class ModuleListener_ModuleCompletableProcess implements CompletableProcess<WorldModule> {
+
+		@Override
+		public void add(final WorldModule item) {
+//			tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4("[ModuleListener_ModuleCompletableProcess] add " + item.module().getFileName());
+
+			// TODO Reactive pattern (aka something ala ReplaySubject)
+			for (final ModuleListener moduleListener : _moduleListeners) {
+				moduleListener.listen(item);
+			}
+		}
+
+		@Override
+		public void complete() {
+			//assert !_moduleListeners.isEmpty();
+
+			// 09/26 tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4("[ModuleListener_ModuleCompletableProcess] complete");
+
+			// TODO Reactive pattern (aka something ala ReplaySubject)
+			for (final ModuleListener moduleListener : _moduleListeners) {
+				moduleListener.close();
+			}
+		}
+
+		@Override
+		public void error(final Diagnostic d) {
+
+		}
+
+		@Override
+		public void preComplete() {
+//			tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4("[ModuleListener_ModuleCompletableProcess] preComplete");
+		}
+
+		@Override
+		public void start() {
+//			tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4("[ModuleListener_ModuleCompletableProcess] start");
+		}
+
+	}
+
+	public class OFA implements Iterable<Triple<AssOutFile, EOT_FileNameProvider, NG_OutputRequest>> {
+
+		// public OFA(final List<Triple<AssOutFile, EOT_OutputFile.FileNameProvider,
+		// NG_OutputRequest>> aOutFileAssertions) {
+		// _l = aOutFileAssertions;
+		// }
+
+		public boolean contains(String aFileName) {
+			for (Triple<AssOutFile, EOT_FileNameProvider, NG_OutputRequest> outFileAssertion : outFileAssertions) {
+				final String containedFilename = outFileAssertion.getMiddle().getFilename();
+
+				if (containedFilename.equals(aFileName)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		@Override
+		public Iterator<Triple<AssOutFile, EOT_FileNameProvider, NG_OutputRequest>> iterator() {
+			return outFileAssertions.stream().iterator();
+		}
+	}
+
+
+
 	@Override
 	public @NotNull Eventual<AccessBus> getAccessBusPromise() {
 		return accessBusPromise;
 	}
+
+
+
+
+
+
 
 	@Override
 	@Contract(pure = true)
@@ -240,11 +440,6 @@ public class EDL_CompilationEnclosure
 		return this._cbOutput;
 	}
 
-	@Override
-	@Contract(pure = true)
-	public EDL_ICompilation getCompilation() {
-		return compilation;
-	}
 
 	@Override
 	@Contract(pure = true)
@@ -252,10 +447,12 @@ public class EDL_CompilationEnclosure
 		return ca;
 	}
 
+
 	@Override
 	public void setCompilationAccess(@NotNull ICompilationAccess aca) {
 		ca = aca;
 	}
+
 
 	@Override
 	@Contract(pure = true)
@@ -315,61 +512,6 @@ public class EDL_CompilationEnclosure
 		//  where pci has a state and kicks to CM_ whatever (this is elevated 2.0)
 	}
 
-	@Contract(pure = true)
-	@Override
-	public EDL_IPipelineAccess getPipelineAccess() {
-		return pa;
-	}
-
-	@Contract(pure = true)
-	@Override
-	public @NotNull Eventual<IPipelineAccess> getPipelineAccessPromise() {
-		return pipelineAccessPromise;
-	}
-
-	@Contract(pure = true)
-	@Override
-	public EDL_PipelineLogic getPipelineLogic() {
-		return pipelineLogic;
-	}
-
-	@Override
-	public void setPipelineLogic(final EDL_PipelineLogic aPipelineLogic) {
-		pipelineLogic = aPipelineLogic;
-
-		getPipelineAccessPromise().then(pa -> pa.resolvePipelinePromise(aPipelineLogic));
-	}
-
-	@Override
-	public void logProgress(final @NotNull CompProgress aCompProgress, final Object x) {
-		aCompProgress.deprecated_print(x, System.out, System.err);
-	}
-
-	@Override
-	public void noteAccept(final @NotNull WorldModule aWorldModule) {
-		var mod = aWorldModule.module();
-		var aMt = EventualExtract.of(aWorldModule.getErq()).mt();
-		tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4(mod);
-		//tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4(aMt);
-	}
-
-	@Override
-	public @NonNull OFA OutputFileAsserts() {
-		return ofa;
-	}
-
-	@Override
-	public void reactiveJoin(final Reactive aReactive) {
-		// throw new IllegalStateException("Error");
-
-		// aReactive.join();
-		tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4("reactiveJoin " + aReactive.toString());
-	}
-
-	@Override
-	public void setCompilerDriver(final CompilerDriver aCompilerDriver) {
-		compilerDriver = aCompilerDriver;
-	}
 
 	@Override
 	public void AssertOutFile_Class(OutputStrategyC.OSC_NFC aNfc, NG_OutputRequest aOutputRequest) {
@@ -462,133 +604,7 @@ public class EDL_CompilationEnclosure
 		return compilation.getObjectTree().getModuleList();
 	}
 
-	@Override
-	public GModuleThing addModuleThing(final GOS_Module aModule) {
-		return addModuleThing((OS_Module) aModule);
-	}
 
-	@Override
-	public void logProgress(final CompProgress aCompProgress, final Pair<Integer, String> aCodeMessagePair) {
-		aCompProgress.deprecated_print(aCodeMessagePair, System.out, System.err);
-	}
-
-	@Override
-	public GModuleThing getModuleThing(final GOS_Module aModule) {
-		return getModuleThing((OS_Module) aModule);
-	}
-
-	private static class __ReactivableObserver implements Observer<Reactivable> {
-
-		@Override
-		public void onSubscribe(@NonNull final Disposable d) {
-			throw new UnintendedUseException();
-		}
-
-		@Override
-		public void onNext(@NonNull final Reactivable aReactivable) {
-//			ReplaySubject
-			throw new UnintendedUseException();
-		}
-
-		@Override
-		public void onError(@NonNull final Throwable e) {
-			throw new UnintendedUseException();
-		}
-
-		@Override
-		public void onComplete() {
-			throw new UnintendedUseException();
-		}
-	}
-
-	private static class __ReactiveDimensionObserver implements Observer<ReactiveDimension> {
-		@Override
-		public void onSubscribe(@NonNull final Disposable d) {
-			throw new UnintendedUseException();
-		}
-
-		@Override
-		public void onNext(@NonNull final ReactiveDimension aReactiveDimension) {
-			// aReactiveDimension.observe();
-			throw new UnintendedUseException();
-		}
-
-		@Override
-		public void onError(@NonNull final Throwable e) {
-			throw new UnintendedUseException();
-		}
-
-		@Override
-		public void onComplete() {
-			throw new UnintendedUseException();
-		}
-	}
-
-	private class ModuleListener_ModuleCompletableProcess implements CompletableProcess<WorldModule> {
-
-		@Override
-		public void add(final WorldModule item) {
-//			tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4("[ModuleListener_ModuleCompletableProcess] add " + item.module().getFileName());
-
-			// TODO Reactive pattern (aka something ala ReplaySubject)
-			for (final ModuleListener moduleListener : _moduleListeners) {
-				moduleListener.listen(item);
-			}
-		}
-
-		@Override
-		public void complete() {
-			//assert !_moduleListeners.isEmpty();
-
-			// 09/26 tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4("[ModuleListener_ModuleCompletableProcess] complete");
-
-			// TODO Reactive pattern (aka something ala ReplaySubject)
-			for (final ModuleListener moduleListener : _moduleListeners) {
-				moduleListener.close();
-			}
-		}
-
-		@Override
-		public void error(final Diagnostic d) {
-
-		}
-
-		@Override
-		public void preComplete() {
-//			tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4("[ModuleListener_ModuleCompletableProcess] preComplete");
-		}
-
-		@Override
-		public void start() {
-//			tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4("[ModuleListener_ModuleCompletableProcess] start");
-		}
-
-	}
-
-	public class OFA implements Iterable<Triple<AssOutFile, EOT_FileNameProvider, NG_OutputRequest>> {
-
-		// public OFA(final List<Triple<AssOutFile, EOT_OutputFile.FileNameProvider,
-		// NG_OutputRequest>> aOutFileAssertions) {
-		// _l = aOutFileAssertions;
-		// }
-
-		public boolean contains(String aFileName) {
-			for (Triple<AssOutFile, EOT_FileNameProvider, NG_OutputRequest> outFileAssertion : outFileAssertions) {
-				final String containedFilename = outFileAssertion.getMiddle().getFilename();
-
-				if (containedFilename.equals(aFileName)) {
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		@Override
-		public Iterator<Triple<AssOutFile, EOT_FileNameProvider, NG_OutputRequest>> iterator() {
-			return outFileAssertions.stream().iterator();
-		}
-	}
 }
 
 //
