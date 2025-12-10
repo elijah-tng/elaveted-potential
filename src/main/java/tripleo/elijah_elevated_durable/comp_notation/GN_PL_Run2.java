@@ -18,41 +18,47 @@ import java.util.*;
 import java.util.function.*;
 
 public class GN_PL_Run2 implements GN_Notable, EventualRegister {
-	private final NonOpinionatedBuilder __nob;
-
-	private final @NotNull WorldModule          mod;
-	private final          EDL_PipelineLogic    pipelineLogic;
-	private final          CompilationEnclosure ce;
-
-	private final DefaultClassGenerator dcg;
-
-	private final Consumer<WorldModule> worldConsumer;
+	private final @NotNull WorldModule           mod;
+	private final @NotNull EDL_PipelineLogic     pipelineLogic;
+	private final @NotNull CompilationEnclosure  ce;
+	private final @NotNull DefaultClassGenerator dcg;
+	private final @NotNull Consumer<WorldModule> worldConsumer;
 
 	@Contract(pure = true)
 	public GN_PL_Run2(final EDL_PipelineLogic aPipelineLogic,
-	                  final @NotNull WorldModule aMod,
-	                  final CompilationEnclosure aCe,
-	                  final Consumer<WorldModule> aWorldConsumer) {
+					  final @NotNull WorldModule aMod,
+					  final CompilationEnclosure aCe,
+					  final Consumer<WorldModule> aWorldConsumer) {
 		this(aPipelineLogic, aMod, aCe, aWorldConsumer, new NonOpinionatedBuilder());
 
 		aCe.getCompilation().addToAllRegisters(this);
 	}
 
 	@Contract(pure = true)
-	public GN_PL_Run2(final EDL_PipelineLogic aPipelineLogic, final @NotNull WorldModule aMod,
-	                  final CompilationEnclosure aCe, final Consumer<WorldModule> aWorldConsumer,
-	                  final @NotNull NonOpinionatedBuilder aNob) {
+	public GN_PL_Run2(final @NotNull EDL_PipelineLogic aPipelineLogic,
+					  final @NotNull WorldModule aMod,
+					  final @NotNull CompilationEnclosure aCe,
+					  final @NotNull Consumer<WorldModule> aWorldConsumer,
+					  final @NotNull NonOpinionatedBuilder aNob) {
 		pipelineLogic = aPipelineLogic;
-		mod = aMod;
-		ce = aCe;
+		mod           = aMod;
+		ce            = aCe;
 		worldConsumer = aWorldConsumer;
-		__nob = aNob;
 
-		dcg = new DefaultClassGenerator(pipelineLogic.dp, __nob);
+		dcg = new DefaultClassGenerator(pipelineLogic.dp, aNob);
 	}
 
-	private void _finish() {
-		pipelineLogic.checkFinishEventuals();
+	@SuppressWarnings("unused")
+	public static @NotNull GN_PL_Run2 getFactoryEnv(GN_Env givenEnv) {
+		if (givenEnv instanceof GN_PL_Run2_Env actualEnv) {
+			return new GN_PL_Run2(actualEnv.pipelineLogic(), actualEnv.mod(), actualEnv.ce(), actualEnv.worldConsumer());
+		}
+		throw new IllegalStateException("Need better env");
+	}
+
+	@Override
+	public <P> void register(final Eventual<P> e) {
+
 	}
 
 	@Override
@@ -63,11 +69,6 @@ public class GN_PL_Run2 implements GN_Notable, EventualRegister {
 	@Override
 	public @NotNull String _host() {
 		return null;
-	}
-
-	@Override
-	public <P> void register(final Eventual<P> e) {
-
 	}
 
 	@Override
@@ -100,14 +101,9 @@ public class GN_PL_Run2 implements GN_Notable, EventualRegister {
 		_finish();
 	}
 
-	@SuppressWarnings("unused")
-	public static @NotNull GN_PL_Run2 getFactoryEnv(GN_Env givenEnv) {
-		if (givenEnv instanceof GN_PL_Run2_Env actualEnv) {
-			return new GN_PL_Run2(actualEnv.pipelineLogic(), actualEnv.mod(), actualEnv.ce(), actualEnv.worldConsumer());
-		}
-		throw new IllegalStateException("Need better env");
+	private void _finish() {
+		pipelineLogic.checkFinishEventuals();
 	}
-
 
 	public record GenerateFunctionsRequest(IClassGenerator classGenerator, DefaultWorldModule worldModule) {
 		public ModuleThing mt() {
