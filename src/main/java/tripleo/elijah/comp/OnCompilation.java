@@ -1,5 +1,5 @@
 package tripleo.elijah.comp;
 
-public interface Postable {
-	void accept(Compilation c);
+public interface OnCompilation {
+	void onCompilation(Compilation c);
 }
