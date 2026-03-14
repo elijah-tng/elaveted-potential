@@ -9,8 +9,9 @@
 package tripleo.elijah_elevated_durable.comp;
 
 import clojure.lang.*;
-import com.google.common.base.Preconditions;
+import com.google.common.base.*;
 import com.google.common.collect.*;
+import io.reactivex.rxjava3.core.*;
 import io.reactivex.rxjava3.core.Observer;
 import org.apache.commons.lang3.tuple.*;
 import org.jdeferred2.*;
@@ -43,6 +44,7 @@ import tripleo.elijah_durable_elevated.stages.deduce.*;
 import tripleo.elijah_durable_elevated.stages.deduce.fluffy.i.*;
 import tripleo.elijah_durable_elevated.stages.deduce.fluffy.impl.*;
 import tripleo.elijah_durable_elevated.stages.logging.*;
+import tripleo.elijah_durable_elevated.world.i.*;
 import tripleo.elijah_durable_elevated.world.i.LivingRepo;
 import tripleo.elijah_elevated_durable.backbone.*;
 import tripleo.elijah_elevated_durable.comp.input.*;
@@ -53,7 +55,6 @@ import tripleo.paths.*;
 
 import java.util.*;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.*;
 
 public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
@@ -100,7 +101,8 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	private                ICompilationAccess3                                            compilationAccess3;
 	private                CPX_Signals                                                    cpxSignals;
 	private                CompilationInterfaceRevised2                                   revised2;
-	private                EDL_LangModel                                                  langModel;
+	private       EDL_LangModel             langModel;
+	private final Eventual<EDL_Compilation> cEv =new Eventual<>();
 
 	public EDL_Compilation(final @NotNull ErrSink aErrSink, final IO aIo) {
 		errSink            = aErrSink;
@@ -174,7 +176,7 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	public String getProjectName() {
 		return getRootCI().getName();
 	}
-	
+
 	@Override
 	public CompilerInstructions getRootCI() {
 		return cci_listener._root();
@@ -192,8 +194,8 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 
 	public static boolean isGitlab_ci() {
 		return System.getenv("GITLAB_CI") != null;
-	}	
-	
+	}
+
 	@Override
 	public void feedCmdLine(final @NotNull List<String> args) {
 		final CompilerController controller = new EDL_CompilerController(this.getCompilationAccess3());
@@ -312,8 +314,8 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public Finally reports() {
 		return _finally;
-	}	
-	
+	}
+
 	@Override
 	public void feedInputs(final @NotNull List<CompilerInput> aCompilerInputs,
 						   final @NotNull CompilerController aController) {
@@ -497,8 +499,8 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public LivingRepo world() {
 		return _repo;
-	}	
-	
+	}
+
 	@Override
 	public void setIO(final IO io) {
 		this.io = io;
@@ -554,7 +556,7 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	public void subscribeCI(final @NotNull Observer<CompilerInstructions> aCio) {
 		_cis.subscribe(aCio);
 	}
-	
+
 	@Override
 	public void pushItem(CompilerInstructions aci) {
 		if (xxx.contains(aci)) {
@@ -639,8 +641,8 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 		ccP.resolve(controller);
 		this.feedInputs(nob.inputs(aStringList), controller);
 		return controller;
-	}	
-	
+	}
+
 	@Override
 	public void use(@NotNull final CompilerInstructions compilerInstructions, final USE_Reasoning aReasoning) {
 		if (aReasoning.ty() == USE_Reasoning.Type.USE_Reasoning__findStdLib) {
@@ -671,7 +673,7 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	public <P> void register(final Eventual<P> aEventual) {
 		getFluffy().register(aEventual);
 	}
-	
+
 	@Override
 	public ElijahCache use_elijahCache() {
 		return use.getElijahCache();
@@ -909,5 +911,15 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public boolean hasClojureSupport() {
 		return false;
+	}
+
+	@Override
+	public void _doOnCompilation(final EDL_Compilation aEdlCompilation) {
+		cEv.resolve(aEdlCompilation);
+	}
+
+	@Override
+	public void post(final OnCompilation aPostable) {
+		cEv.then(aPostable::onCompilation);
 	}
 }
