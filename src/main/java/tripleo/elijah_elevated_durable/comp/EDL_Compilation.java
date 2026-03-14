@@ -89,7 +89,6 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	private final          Eventual<CP_Paths>                                             _p_pathsEventual      = new Eventual<>();
 	private final          Eventual<CompilerController>                                   _p_CompilerController = new Eventual<>();
 	private final          _A_megaGrande                                                  _a_megaGrande         = new _A_megaGrande();
-	private final          List<OnCompilation>                                            posts                 = new ArrayList<>();
 	private                JarWork                                                        jarwork;
 	private                EIT_InputTree                                                  _input_tree;
 	private                EOT_OutputTree                                                 _output_tree;
@@ -175,11 +174,13 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	public String getProjectName() {
 		return getRootCI().getName();
 	}
-
+	
 	@Override
 	public CompilerInstructions getRootCI() {
 		return cci_listener._root();
-	}	@Override
+	}
+
+	@Override
 	public int errorCount() {
 		return errSink.errorCount();
 	}
@@ -191,6 +192,15 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 
 	public static boolean isGitlab_ci() {
 		return System.getenv("GITLAB_CI") != null;
+	}	
+	
+	@Override
+	public void feedCmdLine(final @NotNull List<String> args) {
+		final CompilerController controller = new EDL_CompilerController(this.getCompilationAccess3());
+		ccP.resolve(controller);
+		final NonOpinionatedBuilder nob    = new NonOpinionatedBuilder();
+		final List<CompilerInput>   inputs = nob.inputs(args);
+		feedInputs(inputs, controller);
 	}
 
 	public @NotNull CK_Monitor getDefaultMonitor() {
@@ -199,13 +209,6 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 
 	public @NotNull ICompilationAccess _access() {
 		return new EDL_CompilationAccess(this);
-	}	@Override
-	public void feedCmdLine(final @NotNull List<String> args) {
-		final CompilerController controller = new EDL_CompilerController(this.getCompilationAccess3());
-		ccP.resolve(controller);
-		final NonOpinionatedBuilder nob    = new NonOpinionatedBuilder();
-		final List<CompilerInput>   inputs = nob.inputs(args);
-		feedInputs(inputs, controller);
 	}
 
 	@Override
@@ -243,36 +246,6 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 
 		};
 		return this.revised2;
-	}
-
-	@Override
-	public <T> void addInput(final EOT_Nameable aNameable,
-							 final EIT_InputType ty,
-							 final @NotNull Class<T> aClass,
-							 final java.util.function.Supplier<T> aSupplier) {
-		reports().addInput(aNameable, ty);
-		if (aClass.isAssignableFrom(OS_Module.class)) {
-
-		} else {
-			assert false;
-		}
-
-		var v = aSupplier.get();
-		System.out.println("9898-0553 " + v);
-		assert true;
-	}
-
-	/**
-	 * This one is interesting as it doesnt quite fit
-	 */
-	@Override
-	public CM_Module megaGrande(final OS_Module aModule) {
-		return _a_megaGrande.megaGrande(aModule);
-	}
-
-	@Override
-	public Finally reports() {
-		return _finally;
 	}	public ICompilationAccess3 getCompilationAccess3() {
 		var _c = this;
 		if (compilationAccess3 == null) {
@@ -310,6 +283,61 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 			};
 		}
 		return compilationAccess3;
+	}
+
+	@Override
+	public <T> void addInput(final EOT_Nameable aNameable,
+							 final EIT_InputType ty,
+							 final @NotNull Class<T> aClass,
+							 final java.util.function.Supplier<T> aSupplier) {
+		reports().addInput(aNameable, ty);
+		if (aClass.isAssignableFrom(OS_Module.class)) {
+
+		} else {
+			assert false;
+		}
+
+		var v = aSupplier.get();
+		//System.out.println("9898-0553 " + v);
+	}
+
+	/**
+	 * This one is interesting as it doesnt quite fit
+	 */
+	@Override
+	public CM_Module megaGrande(final OS_Module aModule) {
+		return _a_megaGrande.megaGrande(aModule);
+	}
+
+	@Override
+	public Finally reports() {
+		return _finally;
+	}	
+	
+	@Override
+	public void feedInputs(final @NotNull List<CompilerInput> aCompilerInputs,
+						   final @NotNull CompilerController aController) {
+		if (aCompilerInputs.isEmpty()) {
+			aController.printUsage();
+			return;
+		}
+
+		if (_p_CompilerController.isPending()) {
+			_p_CompilerController.resolve(aController);
+		} else {
+			System.err.println("240921-0213: double set CompilerController");
+		}
+
+		// FIXME 12/04 This seems like alot (esp here)
+		compilationEnclosure.setCompilerInput(aCompilerInputs);
+		aController.setEnclosure(compilationEnclosure);
+
+		for (final CompilerInput compilerInput : aCompilerInputs) {
+			compilerInput.setMaster(master); // FIXME this is too much i think
+		}
+
+		aController.processOptions();
+		aController.runner();
 	}
 
 	@Override
@@ -354,30 +382,6 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 			//throw new RuntimeException(aE);
 			aE.printStackTrace();
 		}
-	}	@Override
-	public void feedInputs(final @NotNull List<CompilerInput> aCompilerInputs,
-						   final @NotNull CompilerController aController) {
-		if (aCompilerInputs.isEmpty()) {
-			aController.printUsage();
-			return;
-		}
-
-		if (_p_CompilerController.isPending()) {
-			_p_CompilerController.resolve(aController);
-		} else {
-			System.err.println("240921-0213: double set CompilerController");
-		}
-
-		// FIXME 12/04 This seems like alot (esp here)
-		compilationEnclosure.setCompilerInput(aCompilerInputs);
-		aController.setEnclosure(compilationEnclosure);
-
-		for (final CompilerInput compilerInput : aCompilerInputs) {
-			compilerInput.setMaster(master); // FIXME this is too much i think
-		}
-
-		aController.processOptions();
-		aController.runner();
 	}
 
 	public JarWork getJarwork() throws WorkException {
@@ -493,6 +497,11 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public LivingRepo world() {
 		return _repo;
+	}	
+	
+	@Override
+	public void setIO(final IO io) {
+		this.io = io;
 	}
 
 	@Override
@@ -534,9 +543,6 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public CompilationConfig _cfg() {
 		return this.cfg;
-	}	@Override
-	public void setIO(final IO io) {
-		this.io = io;
 	}
 
 	@Override
@@ -547,6 +553,16 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public void subscribeCI(final @NotNull Observer<CompilerInstructions> aCio) {
 		_cis.subscribe(aCio);
+	}
+	
+	@Override
+	public void pushItem(CompilerInstructions aci) {
+		if (xxx.contains(aci)) {
+			tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4("** [CompilerInstructions::pushItem] duplicate instructions: " + aci.getFilename());
+		} else {
+			xxx.add(aci);
+			_cis.onNext(aci);
+		}
 	}
 
 	@Override
@@ -591,14 +607,6 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public LCM lcm() {
 		return lcm;
-	}	@Override
-	public void pushItem(CompilerInstructions aci) {
-		if (xxx.contains(aci)) {
-			tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4("** [CompilerInstructions::pushItem] duplicate instructions: " + aci.getFilename());
-		} else {
-			xxx.add(aci);
-			_cis.onNext(aci);
-		}
 	}
 
 	@Override
@@ -631,17 +639,21 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 		ccP.resolve(controller);
 		this.feedInputs(nob.inputs(aStringList), controller);
 		return controller;
+	}	
+	
+	@Override
+	public void use(@NotNull final CompilerInstructions compilerInstructions, final USE_Reasoning aReasoning) {
+		if (aReasoning.ty() == USE_Reasoning.Type.USE_Reasoning__findStdLib) {
+			pushItem(compilerInstructions);
+		}
+
+		use.use(compilerInstructions);
+		//cci_listener.id.add(rootCI);
 	}
 
 	@Override
 	public void onConfig(final DoneCallback<IPersistentMap> cb) {
 		ccP.then(Scc -> Scc.onConfig(cb));
-	}
-
-	/// fixme: lazy
-	@Override
-	public void doOn() {
-		this.posts.stream().forEach(x -> x.onCompilation(this));
 	}
 
 	public void testMapHooks(final List<IFunctionMapHook> ignoredAMapHooks) {
@@ -659,6 +671,11 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	public <P> void register(final Eventual<P> aEventual) {
 		getFluffy().register(aEventual);
 	}
+	
+	@Override
+	public ElijahCache use_elijahCache() {
+		return use.getElijahCache();
+	}
 
 	@Override
 	public void checkFinishEventuals() {
@@ -668,37 +685,12 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public @NotNull String _host() {
 		return "EDL_Compilation";
-	}	@Override
-	public void use(@NotNull final CompilerInstructions compilerInstructions, final USE_Reasoning aReasoning) {
-		if (aReasoning.ty() == USE_Reasoning.Type.USE_Reasoning__findStdLib) {
-			pushItem(compilerInstructions);
-		}
-
-		use.use(compilerInstructions);
-		//cci_listener.id.add(rootCI);
 	}
 
 	public void addInput3(final CompilerInput aInput, final @NotNull ElevatedInput3Callback cb) {
 		// Apparently this is Immediate.IMMEDIATE
 		cb.run(aInput, this.getCompilationClosure());
 	}
-
-
-
-
-
-
-
-	@Override
-	public ElijahCache use_elijahCache() {
-		return use.getElijahCache();
-	}
-
-
-
-
-
-
 
 	@Override
 	public void pushWork(final PW_PushWork aInstance, final PN_Ping aPing) {
@@ -795,14 +787,6 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 		};
 	}
 
-
-
-	@Override
-	public void post(final OnCompilation aPostable) {
-		this.posts.add(aPostable);
-	}
-
-
 	//@Override
 	//public PW_CompilerController get_pw() {
 	//	return (PW_CompilerController) this.pw_controller;
@@ -848,7 +832,7 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 
 
 	@Override
-	public void addCodeOutput(final EOT_FileNameProvider aFileNameProvider, final Supplier<EOT_OutputFile> aOutputFileSupplier, final boolean addFlag) {
+	public void addCodeOutput(final EOT_FileNameProvider aFileNameProvider, final java.util.function.Supplier<EOT_OutputFile> aOutputFileSupplier, final boolean addFlag) {
 		final EOT_OutputFile eof = aOutputFileSupplier.get();
 		final Finally.Output e   = reports().addCodeOutput(aFileNameProvider, eof);
 		if (addFlag) {
