@@ -99,15 +99,4 @@
    [:maven.compiler.release "17"]]
 
   :clean-targets ^{:protect false} ["target/public"]
-  :aliases
-  {"fig"       ["trampoline" "run" "-m" "figwheel.main"]
-   "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "flappy" "-r"]}
-
- :pom-addition
- [:properties
-  [:maven.compiler.source "17"]
-  [:maven.compiler.target "17"]
-  [:maven.compiler.release "17"]]
-
-  ;{:user {:plugins [[venantius/ultra "0.6.0"]]}}
   )
