@@ -33,7 +33,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Run leiningen
-         run: ./lein uberjar
+        run: ./lein uberjar
 
       - name: Run it backwards
-         run: ./lein pom && mvn clean verify package
+        run: ./lein pom && mvn clean verify package
