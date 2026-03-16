@@ -9,7 +9,7 @@
 package tripleo.elijah_elevated_durable.comp;
 
 import clojure.lang.*;
-import com.google.common.base.*;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 import io.reactivex.rxjava3.core.Observer;
 import org.apache.commons.lang3.tuple.*;
@@ -101,7 +101,8 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	private                ICompilationAccess3                                            compilationAccess3;
 	private                CPX_Signals                                                    cpxSignals;
 	private                CompilationInterfaceRevised2                                   revised2;
-	private                EDL_LangModel                                                  langModel;
+	private       EDL_LangModel             langModel;
+	private final Eventual<EDL_Compilation> cEv =new Eventual<>();
 
 	public EDL_Compilation(final @NotNull ErrSink aErrSink, final IO aIo) {
 		errSink            = aErrSink;
@@ -180,6 +181,11 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	public CompilerInstructions getRootCI() {
 		return cci_listener._root();
 	}	@Override
+	public int errorCount() {
+		return errSink.errorCount();
+	}
+
+	@Override
 	public int errorCount() {
 		return errSink.errorCount();
 	}
@@ -848,7 +854,7 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 
 
 	@Override
-	public void addCodeOutput(final EOT_FileNameProvider aFileNameProvider, final Supplier<EOT_OutputFile> aOutputFileSupplier, final boolean addFlag) {
+	public void addCodeOutput(final EOT_FileNameProvider aFileNameProvider, final java.util.function.Supplier<EOT_OutputFile> aOutputFileSupplier, final boolean addFlag) {
 		final EOT_OutputFile eof = aOutputFileSupplier.get();
 		final Finally.Output e   = reports().addCodeOutput(aFileNameProvider, eof);
 		if (addFlag) {
@@ -925,5 +931,15 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public boolean hasClojureSupport() {
 		return false;
+	}
+
+	@Override
+	public void _doOnCompilation(final EDL_Compilation aEdlCompilation) {
+		cEv.resolve(aEdlCompilation);
+	}
+
+	@Override
+	public void post(final OnCompilation aPostable) {
+		cEv.then(aPostable::onCompilation);
 	}
 }

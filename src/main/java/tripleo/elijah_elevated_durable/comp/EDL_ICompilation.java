@@ -131,5 +131,5 @@ public interface EDL_ICompilation extends Compilation {
 	void onConfig(DoneCallback<IPersistentMap>
 				  cb);
 
-	void doOn();
+	void _doOnCompilation(EDL_Compilation aEdlCompilation);
 }

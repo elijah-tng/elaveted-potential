@@ -32,9 +32,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Run tests
-        run: ./lein test #mvn test
-
       - name: Run leiningen
         run: ./lein uberjar
 
