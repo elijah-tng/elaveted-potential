@@ -5,12 +5,9 @@
                   "17"
                   "-g"
                   "-Xlint:-deprecation"
-                  ;"-Xlint:all"
-                  ;"-cp"
-                  ;"./out/production/evelated-potential/:dist/lib/annotations-24.1.0.jar"
                   ]
   :dependencies
-  [[org.clojure/clojure "1.12.0"]
+  [[org.clojure/clojure "1.12.4"]
 
    ;[org.clojure/spec.alpha "0.5.238"]
    ;[org.clojure/core.specs.alpha "0.4.74"]
@@ -42,7 +39,6 @@
    [aleph "0.8.3"]
    [gloss "0.2.6"]
    [metosin/reitit "0.5.18"]
-   ;[org.clojure/clojure "1.11.1"]
    ;[org.clojure/core.async "1.6.673"]
 
    [org.reactivestreams/reactive-streams "1.0.4"]

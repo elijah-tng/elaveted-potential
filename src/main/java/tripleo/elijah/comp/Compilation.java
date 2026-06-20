@@ -93,7 +93,7 @@ public interface Compilation /*extends GCompilation*/ {
 
 	CompilationInterfaceRevised revised();
 
-	void post(OnCompilation aPostable);
+	void post(OnCompilation aOnCompilation);
 
 	boolean hasClojureSupport();
 
