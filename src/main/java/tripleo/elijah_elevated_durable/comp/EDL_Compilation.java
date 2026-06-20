@@ -177,10 +177,10 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 		return getRootCI().getName();
 	}
 
-	@Override
+	/*@Override
 	public int errorCount() {
 		return errSink.errorCount();
-	}
+	}*/
 
 	@Override
 	public CompilerInstructions getRootCI() {
