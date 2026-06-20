@@ -62,15 +62,9 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	private final          Map<CompilerInput, CM_CompilerInput>                           _ci_models;
 	private final          List<Triple<CN_CompilerInputWatcher.e, CompilerInput, Object>> _ciw_buffer;
 	private final          FluffyCompImpl                                                 _fluffyComp;
-	//	@Getter
 	private final          CompilationConfig                                              cfg;
-	//	@Getter
 	private final          CompilationEnclosure                                           compilationEnclosure;
-	//	@Getter
 	private final          EDL_CIS                                                        _cis;
-	//	@Getter
-//	private final CK_Monitor                          defaultMonitor;
-//	@Getter
 	private final          USE                                                            use;
 	private final          CompFactory                                                    _con;
 	private final          LivingRepo                                                     _repo;
@@ -85,7 +79,7 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	private final          PW_Controller                                                  pw_controller;
 	private final          LCM                                                            lcm;
 	private final @NotNull CK_Monitor                                                     defaultMonitor;
-	@SuppressWarnings("FieldCanBeLocal")
+	@SuppressWarnings("FieldCanBeLocal")//
 	private final          Eventual<CP_Paths>                                             _p_pathsEventual      = new Eventual<>();
 	private final          Eventual<CompilerController>                                   _p_CompilerController = new Eventual<>();
 	private final          _A_megaGrande                                                  _a_megaGrande         = new _A_megaGrande();
@@ -218,13 +212,13 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 		if (this.revised2 != null) return this.revised2;
 		this.revised2 = new CompilationInterfaceRevised2() {
 			// FIXME backwards
-/*
+			/*
 			private final @NotNull CompilationInterfaceRevised revised;
 
 			{
 				this.revised = revised();
 			}
-*/
+			*/
 
 			@Override
 			public CK_Marker addMarker(final String aPath, final Object aValue) {
@@ -631,8 +625,6 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 
 	/**
 	 * Convenience function
-	 *
-	 * @return
 	 */
 	@Override
 	public CompilerController feedInputsCon(final List<String> aStringList) {
