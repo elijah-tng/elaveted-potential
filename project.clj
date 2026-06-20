@@ -55,6 +55,8 @@
 
    [org.slf4j/slf4j-api "1.7.25"]
    [org.slf4j/slf4j-simple "1.7.25"]
+
+   [junit/junit "4.13.2"]
    ]
 
   :source-paths
@@ -74,9 +76,10 @@
   {:uberjar {;;:aot      :all
              :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}
    :dev     {:source-paths ["dev"]
-             :dependencies [[org.clojure/tools.namespace "0.2.3"]
-                            [org.clojure/java.classpath "0.2.0"]]
-             :plugins      [[com.jakemccrary/lein-test-refresh "0.25.0"]
+             :dependencies [;[org.clojure/tools.namespace "0.2.3"]
+                            ;[org.clojure/java.classpath "0.2.0"]
+                             ]
+             :plugins      [;[com.jakemccrary/lein-test-refresh "0.25.0"]
              ;               [venantius/ultra "0.6.0"]
              ]                            }}
 
