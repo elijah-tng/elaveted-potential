@@ -8,7 +8,7 @@
   <name>elaveted-lein</name>
   <description/>
   <scm>
-    <tag>6d7c0291215f6bce0ffabdc7e3020c23163b6d4a</tag>
+    <tag>d006fe4e4d18b413bff67e0e45162cf73283954c</tag>
   </scm>
   <build>
     <sourceDirectory>src/main/clojure</sourceDirectory>

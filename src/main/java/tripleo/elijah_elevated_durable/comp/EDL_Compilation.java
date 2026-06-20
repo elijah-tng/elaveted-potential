@@ -8,52 +8,59 @@
  */
 package tripleo.elijah_elevated_durable.comp;
 
-import clojure.lang.*;
+import clojure.lang.IPersistentMap;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableList;
 import io.reactivex.rxjava3.core.Observer;
-import org.apache.commons.lang3.tuple.*;
-import org.jdeferred2.*;
-import org.jetbrains.annotations.*;
-import tripleo.elijah.ci.*;
+import org.apache.commons.lang3.tuple.Triple;
+import org.jdeferred2.DoneCallback;
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.*;
 import tripleo.elijah.comp.i.*;
-import tripleo.elijah.comp.nextgen.pn.*;
-import tripleo.elijah.comp.nextgen.pw.*;
-import tripleo.elijah.comp.percy.*;
+import tripleo.elijah.comp.nextgen.pn.PN_Ping;
+import tripleo.elijah.comp.nextgen.pw.PW_Controller;
+import tripleo.elijah.comp.nextgen.pw.PW_PushWork;
+import tripleo.elijah.comp.percy.CN_CompilerInputWatcher;
 import tripleo.elijah.comp.specs.*;
-import tripleo.elijah.compiler_model.*;
-import tripleo.elijah.g.*;
+import tripleo.elijah.compiler_model.CM_Ez;
+import tripleo.elijah.compiler_model.CM_Module;
+import tripleo.elijah.g.GPipelineAccess;
+import tripleo.elijah.g.GWorldModule;
 import tripleo.elijah.lang.i.*;
-import tripleo.elijah.nextgen.inputtree.*;
-import tripleo.elijah.nextgen.outputstatement.*;
+import tripleo.elijah.nextgen.inputtree.EIT_InputTree;
+import tripleo.elijah.nextgen.inputtree.EIT_InputType;
+import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputtree.*;
-import tripleo.elijah.stages.logging.*;
-import tripleo.elijah.world.i.*;
-import tripleo.elijah_durable_elevated.*;
-import tripleo.elijah_durable_elevated.comp.*;
-import tripleo.elijah_durable_elevated.comp.i.*;
-import tripleo.elijah_durable_elevated.comp.i.extra.*;
-import tripleo.elijah_durable_elevated.comp.impl.*;
+import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.world.i.WorldModule;
+import tripleo.elijah_durable_elevated.DebugFlags;
+import tripleo.elijah_durable_elevated.comp.ICompilationAccess3;
+import tripleo.elijah_durable_elevated.comp.ModuleBuilder;
+import tripleo.elijah_durable_elevated.comp.i.CompFactory;
+import tripleo.elijah_durable_elevated.comp.i.LCM_CompilerAccess;
+import tripleo.elijah_durable_elevated.comp.i.extra.IPipelineAccess;
+import tripleo.elijah_durable_elevated.comp.impl.LCM_Event_RootCI;
 import tripleo.elijah_durable_elevated.comp.internal.*;
-import tripleo.elijah_durable_elevated.comp.nextgen.*;
-import tripleo.elijah_durable_elevated.factory.*;
-import tripleo.elijah_durable_elevated.nextgen.comp_model.*;
-import tripleo.elijah_durable_elevated.stages.deduce.*;
-import tripleo.elijah_durable_elevated.stages.deduce.fluffy.i.*;
-import tripleo.elijah_durable_elevated.stages.deduce.fluffy.impl.*;
-import tripleo.elijah_durable_elevated.stages.logging.*;
+import tripleo.elijah_durable_elevated.comp.nextgen.EDL_CP_Paths;
+import tripleo.elijah_durable_elevated.factory.NonOpinionatedBuilder;
+import tripleo.elijah_durable_elevated.nextgen.comp_model.CM_CompilerInput;
+import tripleo.elijah_durable_elevated.stages.deduce.IFunctionMapHook;
+import tripleo.elijah_durable_elevated.stages.deduce.fluffy.i.FluffyComp;
+import tripleo.elijah_durable_elevated.stages.deduce.fluffy.impl.FluffyCompImpl;
+import tripleo.elijah_durable_elevated.stages.logging.EDL_ElLog;
 import tripleo.elijah_durable_elevated.world.i.LivingRepo;
-import tripleo.elijah_elevated_durable.backbone.*;
-import tripleo.elijah_elevated_durable.comp.input.*;
-import tripleo.elijah_elevated_durable.lang_model.*;
+import tripleo.elijah_elevated_durable.backbone.CompilationEnclosure;
+import tripleo.elijah_elevated_durable.comp.input.EDL_CompilerInput;
+import tripleo.elijah_elevated_durable.lang_model.EDL_LangModel;
+import tripleo.elijah_elevated_durable.lang_model.LangModel;
 import tripleo.elijah_fluffy.util.*;
 import tripleo.graph.*;
-import tripleo.paths.*;
+import tripleo.paths.CPX_CalculateFinishParse;
+import tripleo.paths.CP_Paths;
 
 import java.util.*;
-import java.util.function.*;
-import java.util.stream.*;
+import java.util.stream.Collectors;
 
 public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	final                  Eventual<CompilerController>                                   ccP                   = new Eventual<>();
@@ -93,8 +100,8 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	private                ICompilationAccess3                                            compilationAccess3;
 	private                CPX_Signals                                                    cpxSignals;
 	private                CompilationInterfaceRevised2                                   revised2;
-	private                EDL_LangModel langModel;
-	private Eventual<EDL_Compilation>    postEv = new Eventual<>();
+	private                EDL_LangModel                                                  langModel;
+	private                Eventual<EDL_Compilation>                                      postEv                = new Eventual<>();
 
 	public EDL_Compilation(final @NotNull ErrSink aErrSink, final IO aIo) {
 		errSink            = aErrSink;
@@ -173,6 +180,11 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	}
 
 	@Override
+	public int errorCount() {
+		return errSink.errorCount();
+	}
+
+	@Override
 	public CompilerInstructions getRootCI() {
 		return cci_listener._root();
 	}
@@ -238,7 +250,9 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 
 		};
 		return this.revised2;
-	}	public ICompilationAccess3 getCompilationAccess3() {
+	}
+
+	public ICompilationAccess3 getCompilationAccess3() {
 		var _c = this;
 		if (compilationAccess3 == null) {
 			compilationAccess3 = new ICompilationAccess3() {
