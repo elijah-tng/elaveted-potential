@@ -101,8 +101,8 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	private                ICompilationAccess3                                            compilationAccess3;
 	private                CPX_Signals                                                    cpxSignals;
 	private                CompilationInterfaceRevised2                                   revised2;
-	private       EDL_LangModel             langModel;
-	private final Eventual<EDL_Compilation> cEv =new Eventual<>();
+	private                EDL_LangModel                                                  langModel;
+	private final          Eventual<EDL_Compilation>                                      cEv                   = new Eventual<>();
 
 	public EDL_Compilation(final @NotNull ErrSink aErrSink, final IO aIo) {
 		errSink            = aErrSink;
@@ -180,9 +180,6 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public CompilerInstructions getRootCI() {
 		return cci_listener._root();
-	}	@Override
-	public int errorCount() {
-		return errSink.errorCount();
 	}
 
 	@Override
@@ -205,7 +202,9 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 
 	public @NotNull ICompilationAccess _access() {
 		return new EDL_CompilationAccess(this);
-	}	@Override
+	}
+
+	@Override
 	public void feedCmdLine(final @NotNull List<String> args) {
 		final CompilerController controller = new EDL_CompilerController(this.getCompilationAccess3());
 		ccP.resolve(controller);
@@ -279,7 +278,9 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public Finally reports() {
 		return _finally;
-	}	public ICompilationAccess3 getCompilationAccess3() {
+	}
+
+	public ICompilationAccess3 getCompilationAccess3() {
 		var _c = this;
 		if (compilationAccess3 == null) {
 			compilationAccess3 = new ICompilationAccess3() {
@@ -360,7 +361,9 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 			//throw new RuntimeException(aE);
 			aE.printStackTrace();
 		}
-	}	@Override
+	}
+
+	@Override
 	public void feedInputs(final @NotNull List<CompilerInput> aCompilerInputs,
 						   final @NotNull CompilerController aController) {
 		if (aCompilerInputs.isEmpty()) {
@@ -399,16 +402,14 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 
 				@Override
 				public void subscribeCalculateFinishParse(CPX_CalculateFinishParse cp_OutputPath) {
-/*
-					pathsEventual $$ / * (CP_Paths Spaths) * / -> {
-					pathsEventual $$ / * (... (aka Spaths), <extra>) * / -> {
-					pathsEventual $$ {
-						_.subscribeCalculateFinishParse(cp_OutputPath);
-						it.subscribeCalculateFinishParse(cp_OutputPath);
-//						$.subscribeCalculateFinishParse($$);
-//						prob: {subscribeCalculateFinishParse} // !!
-					});
-*/
+					//pathsEventual $$ / * (CP_Paths Spaths) * / -> {
+					//pathsEventual $$ / * (... (aka Spaths), <extra>) * / -> {
+					//pathsEventual $$ {
+					//	_.subscribeCalculateFinishParse(cp_OutputPath);
+					//	it.subscribeCalculateFinishParse(cp_OutputPath);
+					//	//$.subscribeCalculateFinishParse($$);
+					//	//prob: {subscribeCalculateFinishParse} // !!
+					//});
 					//noinspection CodeBlock2Expr
 					_p_pathsEventual.then((CP_Paths Spaths) -> {
 						Spaths.subscribeCalculateFinishParse(cp_OutputPath);
@@ -540,7 +541,9 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public CompilationConfig _cfg() {
 		return this.cfg;
-	}	@Override
+	}
+
+	@Override
 	public void setIO(final IO io) {
 		this.io = io;
 	}
@@ -597,7 +600,9 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public LCM lcm() {
 		return lcm;
-	}	@Override
+	}
+
+	@Override
 	public void pushItem(CompilerInstructions aci) {
 		if (xxx.contains(aci)) {
 			tripleo.elijah_fluffy.util.SimplePrintLoggerToRemoveSoon.println_err_4("** [CompilerInstructions::pushItem] duplicate instructions: " + aci.getFilename());
@@ -644,12 +649,6 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 		ccP.then(Scc -> Scc.onConfig(cb));
 	}
 
-	/// fixme: lazy
-	@Override
-	public void doOn() {
-		this.posts.stream().forEach(x -> x.onCompilation(this));
-	}
-
 	public void testMapHooks(final List<IFunctionMapHook> ignoredAMapHooks) {
 		// pipelineLogic.dp.
 	}
@@ -674,7 +673,9 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public @NotNull String _host() {
 		return "EDL_Compilation";
-	}	@Override
+	}
+
+	@Override
 	public void use(@NotNull final CompilerInstructions compilerInstructions, final USE_Reasoning aReasoning) {
 		if (aReasoning.ty() == USE_Reasoning.Type.USE_Reasoning__findStdLib) {
 			pushItem(compilerInstructions);
@@ -690,20 +691,10 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	}
 
 
-
-
-
-
-
 	@Override
 	public ElijahCache use_elijahCache() {
 		return use.getElijahCache();
 	}
-
-
-
-
-
 
 
 	@Override
@@ -800,20 +791,6 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 			}
 		};
 	}
-
-
-
-	@Override
-	public void post(final OnCompilation aPostable) {
-		this.posts.add(aPostable);
-	}
-
-
-	//@Override
-	//public PW_CompilerController get_pw() {
-	//	return (PW_CompilerController) this.pw_controller;
-	//}
-
 
 	@Override
 	public @NotNull EOT_OutputTree getOutputTree() {
@@ -936,10 +913,19 @@ public class EDL_Compilation implements EDL_ICompilation, EventualRegister {
 	@Override
 	public void _doOnCompilation(final EDL_Compilation aEdlCompilation) {
 		cEv.resolve(aEdlCompilation);
+		// wonder what the difference is...
+		//this.posts.stream().forEach(x -> x.onCompilation(this));
 	}
 
 	@Override
 	public void post(final OnCompilation aPostable) {
-		cEv.then(aPostable::onCompilation);
+		//	cEv.then(aPostable::onCompilation);
+		this.posts.add(aPostable);
 	}
+
+	//@Override
+	//public PW_CompilerController get_pw() {
+	//	return (PW_CompilerController) this.pw_controller;
+	//}
+
 }
