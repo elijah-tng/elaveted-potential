@@ -73,11 +73,14 @@ public class Main {
 			return (this.triggerOk = true);
 		}
 
-		private static void _onCompilerController(final @NotNull CompilerController value,
+		private /*static*/ void _onCompilerController(final @NotNull CompilerController value,
 												  final IPersistentMap aConfig) {
 			value.setConfig(aConfig);
 			final String key  = "CompilerController";
 			final Object ccs0 = aConfig.valAt(key, null);
+			if (this.ca != null && this.ca[0]==null) {
+				this.ca[0] = value;
+			}
 			if (ccs0 != null) {
 				final IFn ccs = (IFn) ccs0;
 				ccs.invoke(value);
