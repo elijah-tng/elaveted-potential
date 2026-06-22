@@ -1,6 +1,6 @@
 Elijah elaveted-potential
 ==========================
 
-tldr: clojure 
+tldr: elevated semi-hard forked \@ tbd optimistically compiled withh leiningen
 
-leiningen for now
+the pom.xml is intended for jitpack and idea
