@@ -55,6 +55,8 @@
 
    [org.slf4j/slf4j-api "1.7.25"]
    [org.slf4j/slf4j-simple "1.7.25"]
+
+   [junit/junit "4.13.2"]
    ]
 
   :source-paths
