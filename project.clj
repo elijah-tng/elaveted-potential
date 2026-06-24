@@ -1,4 +1,4 @@
-(defproject elaveted-lein "2025.99.100-SNAPSHOT"
+(defproject elaveted-lein "2025.98.101-SNAPSHOT"
   :javac-options ["-target"
                   "17"
                   "-source"
@@ -44,7 +44,7 @@
    [org.reactivestreams/reactive-streams "1.0.4"]
    [io.reactivex.rxjava3/rxjava "3.1.8"]
 
-   [org.apache.commons/commons-lang3 "3.14.0"]
+   [org.apache.commons/commons-lang3 "3.18.0"]
    [commons-codec/commons-codec "1.16.1"]
 
    ;;[com.google.auto.service/auto-service "1.1.1"]
