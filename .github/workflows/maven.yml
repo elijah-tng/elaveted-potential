@@ -31,6 +31,14 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      
+      - name: Cache leiningen/self-installs
+        uses: actions/cache@v4
+        with:
+          path: ~/.lein/self-installs/
+          key: ${{ runner.os }}-leinsi-${{ hashFiles('**/*.jar') }}
+          restore-keys: |
+            ${{ runner.os }}-leinsi-
 
       - name: Run leiningen
         run: ./lein uberjar
