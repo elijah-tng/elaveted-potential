@@ -4,14 +4,14 @@
   <groupId>elaveted-lein</groupId>
   <artifactId>elaveted-lein</artifactId>
   <packaging>jar</packaging>
-  <version>2025.99.100-SNAPSHOT</version>
+  <version>2025.98.101-SNAPSHOT</version>
   <name>elaveted-lein</name>
   <description/>
   <scm>
     <url>https://github.com/elijah-tng/elaveted-potential</url>
     <connection>scm:git:git://github.com/elijah-tng/elaveted-potential.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/elijah-tng/elaveted-potential.git</developerConnection>
-    <tag>6e6bcf7de521ca8b351dcb43c8a85f41ba313c41</tag>
+    <tag>6d4fcb7956ab609c6b5b28669e2eb6b0674550a5</tag>
   </scm>
   <build>
     <sourceDirectory>src/main/clojure</sourceDirectory>
